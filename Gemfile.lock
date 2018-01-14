@@ -1,0 +1,22 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    hashie (3.5.7)
+    minitar (0.6.1)
+    minitar-cli (0.6.1)
+      minitar (~> 0.6.0)
+      powerbar (~> 1.0)
+    mysql2 (0.3.21)
+    powerbar (1.0.18)
+      hashie (>= 1.1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitar
+  minitar-cli
+  mysql2 (~> 0.3.20)
+
+BUNDLED WITH
+   1.16.0
