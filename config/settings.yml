@@ -2,7 +2,7 @@ mysql:
   host: 'localhost'
   username: 'root'
   password: '7QiSlC?4'
-  database: 'regulus'
+  database: 'zosma'
 
 csv_dir: '/mnt/smb'
 tmp_file: 'tmp/rates.csv'
