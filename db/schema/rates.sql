@@ -3,5 +3,6 @@ CREATE TABLE IF NOT EXISTS rates (
   time DATETIME NOT NULL,
   pair VARCHAR(6) NOT NULL,
   bid FLOAT NOT NULL,
-  ask FLOAT NOT NULL
+  ask FLOAT NOT NULL,
+  UNIQUE(time, pair, bid, ask)
 )
