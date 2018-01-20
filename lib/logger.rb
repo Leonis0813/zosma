@@ -1,13 +1,15 @@
+require 'fileutils'
 require 'json'
 require_relative '../config/settings'
 
 module Logger
-  FILE_PATH = File.join(Settings.application_root, 'log/aggregate.log')
+  LOG_DIR = "#{Settings.application_root}/log"
 
   class << self
     def info(body)
+      FileUtils.mkdir_p(LOG_DIR)
       body = ['[I]', "[#{Time.now.strftime('%F %T.%6N')}]", body.to_json].join('')
-      File.open(FILE_PATH, 'a') {|file| file.puts(body) }
+      File.open("#{LOG_DIR}/#{caller[-1][/^(.*)\./, 1]}.log", 'a') {|file| file.puts(body) }
       puts body if ENV['STDOUT'].to_s == 'on'
     end
 
