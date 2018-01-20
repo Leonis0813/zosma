@@ -10,25 +10,18 @@ class MySQLClient
   end
 
   def load(file, table, columns = [])
-    query = File.read(File.join(SQL_PATH, 'collect/load.sql'))
-    query.gsub('$FILE', file)
-    query.gsub!('$TABLE', table)
-
     variables = columns.map.with_index do |_, i|
       "@#{i + 1}"
     end.join(',')
-    query.gsub!('$VARIABLES', variables)
 
     values = columns.map.with_index do |column, i|
       "#{column}=@#{i + 1}"
     end.join(',')
-    query.gsub!('$VALUES', values)
 
     start_time = Time.now
-    execute_query(query)
+    execute_query("LOAD DATA LOCAL INFILE '#{file}' INTO TABLE #{table} FIELDS TERMINATED BY ',' (#{variables}) SET #{values}")
     end_time = Time.now
     body = {
-      :sql => 'load.sql',
       :param => {:file => file, :table => table, :columns => columns},
       :stat => {:size => File.stat(file).size, :line => File.read(file).lines.size},
       :mysql_runtime => (end_time - start_time),
