@@ -42,23 +42,6 @@ class MysqlClient
     results
   end
 
-  def create_candle_sticks(param)
-    query = File.read(File.join(Settings.application_root, 'aggregate.sql'))
-    param.each {|key, value| query.gsub!("$#{key.upcase}", value) }
-
-    start_time = Time.now
-    execute_query(query)
-    end_time = Time.now
-    body = {
-      :sql => 'aggregate.sql',
-      :param => param,
-      :mysql_runtime => (end_time - start_time),
-    }
-    Logger.info(body)
-  end
-
-  private
-
   def execute_query(query)
     begin
       @client.query(query)
