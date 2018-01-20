@@ -2,7 +2,7 @@ require 'mysql2'
 require_relative 'logger'
 require_relative '../config/settings'
 
-class MySQLClient
+class MysqlClient
   def initialize
     @client = Mysql2::Client.new(Settings.mysql)
   end
