@@ -5,23 +5,17 @@ require_relative '../config/settings'
 require_relative '../lib/logger'
 require_relative '../lib/mysql_client'
 
-def import(date)
-  target_files = rate_files(date)
+def import(file_name)
+  Logger.write_with_runtime(:action => 'import', :file_name => file_name) do
+    rates = CSV.read(file_name, :converters => :all)
+    rates.map! {|rate| [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]] }
 
-  client = MySQLClient.new
-
-  Logger.write_with_runtime(:module => 'import', :rate_files => target_files.map {|file| File.basename(file) }) do
-    target_files.each do |target_file|
-      rates = CSV.read(target_file, :converters => :all)
-      rates.map! {|rate| [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]] }
-
-      CSV.open(Settings.tmp_file, 'w') do |csv|
-        rates.each {|rate| csv << rate }
-      end
-
-      client.import_rates(Settings.tmp_file)
-
-      FileUtils.rm(Settings.tmp_file)
+    CSV.open(Settings.tmp_file, 'w') do |csv|
+      rates.each {|rate| csv << rate }
     end
+
+    MySQLClient.new.load(Settings.tmp_file, 'rates', %w[time pair bid ask])
+
+    FileUtils.rm(Settings.tmp_file)
   end
 end
