@@ -3,8 +3,6 @@ require_relative 'logger'
 require_relative '../config/settings'
 
 class MySQLClient
-  SQL_PATH = File.join(Settings.application_root, 'sqls')
-
   def initialize
     @client = Mysql2::Client.new(Settings.mysql)
   end
@@ -30,23 +28,17 @@ class MySQLClient
   end
 
   def select(attributes, table, condition = 'TRUE')
-    results = execute_query("SELECT #{attributes.join(',')} FROM #{table} WHERE #{condition}")
-    client.close
-    results
-  end
-    query = File.read(File.join(SQL_PATH, 'collect/select.sql'))
-
     start_time = Time.now
-    rates = execute_query(query.gsub('$DAY', day))
+    results = execute_query("SELECT #{attributes.join(',')} FROM #{table} WHERE #{condition}")
     end_time = Time.now
+    client.close
+
     body = {
-      :sql => 'export.sql',
-      :param => {:day => day},
-      :num_of_rates => rates.size,
+      :num_of_rates => results.size,
       :mysql_runtime => (end_time - start_time),
     }
     Logger.info(body)
-    rates
+    results
   end
 
   def create_candle_sticks(param)
