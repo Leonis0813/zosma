@@ -31,11 +31,3 @@ def year(end_date)
   intervals = (end_date.min == 0 and end_date.hour == 0 and end_date.day == 1 and end_date.month == 1) ? check('year', end_date) : []
   intervals.map {|interval| [interval, end_date << (12 * interval.split('-').first.to_i)] }
 end
-
-def rate_files(date)
-  Dir[File.join(Settings.csv_dir, "*_#{date.strftime('%F')}.csv")]
-end
-
-def export_file(date)
-  File.join(Settings.application_root, Settings.backup_dir, "#{date.strftime('%F')}.csv")
-end

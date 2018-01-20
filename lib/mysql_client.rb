@@ -36,9 +36,12 @@ class MySQLClient
     Logger.info(body)
   end
 
-  def get_rates(date)
-    query = File.read(File.join(SQL_PATH, 'export.sql'))
-    day = date.strftime('%F')
+  def select(attributes, table, condition = 'TRUE')
+    results = execute_query("SELECT #{attributes.join(',')} FROM #{table} WHERE #{condition}")
+    client.close
+    results
+  end
+    query = File.read(File.join(SQL_PATH, 'collect/select.sql'))
 
     start_time = Time.now
     rates = execute_query(query.gsub('$DAY', day))
