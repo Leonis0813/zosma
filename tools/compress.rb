@@ -1,7 +1,7 @@
 require 'fileutils'
 require 'minitar'
 require 'zlib'
-require_relative 'logger'
+require_relative '../lib/logger'
 require_relative '../config/settings'
 
 TARGET_MONTH = (Date.today << 1).strftime('%Y-%m')
