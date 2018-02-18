@@ -17,7 +17,10 @@ Dir[File.join(Settings.application_root, 'db/schema/*.sql')].each do |sql_file|
   client.query(File.read(sql_file))
 end
 
+indexes = client.query('SHOW INDEX FROM rates')
 %w[ time pair ].each do |column|
-  client.query("ALTER TABLE rates ADD INDEX index_#{column}(#{column})")
+  unless indexes.any? {|index| index['Key_name'] == "index_#{column}" }
+    client.query("ALTER TABLE rates ADD INDEX index_#{column}(#{column})")
+  end
 end
 client.close
