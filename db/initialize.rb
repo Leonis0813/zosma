@@ -2,7 +2,6 @@ require 'mysql2'
 require_relative '../config/settings'
 
 client = Mysql2::Client.new(Settings.mysql.select {|key, _| not key == 'database' })
-client.query("DROP DATABASE IF EXISTS #{Settings.mysql['database']}")
 
 query =<<"EOF"
 CREATE DATABASE IF NOT EXISTS
