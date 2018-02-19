@@ -1,10 +1,9 @@
 require 'fileutils'
-require_relative 'helper'
 require_relative '../lib/logger'
 
 TARGET_DATE = Date.today - 2
-EXPORT_FILE = export_file(TARGET_DATE)
-REMOVED_FILES = rate_files(TARGET_DATE)
+EXPORT_FILE = File.join(Settings.application_root, Settings.backup_dir, "#{TARGET_DATE.strftime('%F')}.csv")
+REMOVED_FILES = Dir[File.join(Settings.csv_dir, "*_#{TARGET_DATE.strftime('%F')}.csv")]
 
 if File.exists?(EXPORT_FILE) and not REMOVED_FILES.empty?
   rates_count = REMOVED_FILES.inject(0) {|count, csv| count + File.read(csv).lines.size }
