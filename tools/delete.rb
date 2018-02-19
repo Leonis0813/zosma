@@ -8,7 +8,7 @@ REMOVED_FILES = Dir[File.join(Settings.csv_dir, "*_#{TARGET_DATE.strftime('%F')}
 if File.exists?(EXPORT_FILE) and not REMOVED_FILES.empty?
   rates_count = REMOVED_FILES.inject(0) {|count, csv| count + File.read(csv).lines.size }
   if rates_count == File.read(EXPORT_FILE).lines.size
-#    FileUtils.rm(REMOVED_FILES)
+    FileUtils.rm(REMOVED_FILES)
     Logger.info(:export_file => EXPORT_FILE, :removed_files => REMOVED_FILES, :num_of_rates => rates_count)
   end
 end
