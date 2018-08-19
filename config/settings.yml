@@ -1,8 +1,9 @@
 mysql:
+  adapter: 'mysql2'
+  database: 'zosma'
   host: 'localhost'
   username: 'root'
   password: '7QiSlC?4'
-  database: 'zosma'
 
 csv_dir: '/mnt/smb'
 tmp_file: 'tmp/rates.csv'
