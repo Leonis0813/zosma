@@ -1,8 +1,8 @@
 require 'csv'
 require 'fileutils'
 require 'logger'
-require_relative 'config/initialize'
-require_relative 'db/connect'
+require_relative '../config/initialize'
+require_relative '../db/connect'
 Dir['models/*'].each {|f| require_relative f }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')

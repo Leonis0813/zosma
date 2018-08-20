@@ -1,32 +1,26 @@
 require 'fileutils'
+require 'logger'
 require 'minitar'
 require 'zlib'
-require_relative '../lib/logger'
-require_relative '../config/settings'
+require_relative '../config/initialize'
 
 TARGET_MONTH = (Date.today << 1).strftime('%Y-%m')
-TMP_DIR = File.join(Settings.application_root, 'tmp')
-COMPRESSED_DIR = File.join(TMP_DIR, TARGET_MONTH)
-EXPORT_DIR = File.join(Settings.application_root, 'backup')
-COMPRESSED_FILES = Dir[File.join(EXPORT_DIR, "#{TARGET_MONTH}-*.csv")]
-GZIP_FILE = "#{TARGET_MONTH}.tar.gz"
+EXPORT_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir)
 
-FileUtils.mkdir_p(COMPRESSED_DIR)
+Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
+  compressed_dir = File.join(dir, TARGET_MONTH)
+  FileUtils.mkdir_p(compressed_dir)
 
-Logger.write_with_runtime(:module => 'compress', :gzip_file => GZIP_FILE) do
-  Zlib::GzipWriter.open(File.join(EXPORT_DIR, GZIP_FILE), Zlib::BEST_COMPRESSION) do |gz|
-    out = Minitar::Output.new(gz)
+  gzip_file =File.join(EXPORT_DIR, "#{TARGET_MONTH}.tar.gz")
+  Zlib::GzipWriter.open(gzip_file, Zlib::BEST_COMPRESSION) do |gzip|
+    out = Minitar::Output.new(gzip)
 
-    FileUtils.cp(COMPRESSED_FILES, COMPRESSED_DIR)
-    Dir.chdir(TMP_DIR)
+    FileUtils.cp(Dir[File.join(EXPORT_DIR, "#{TARGET_MONTH}-*.csv")], compressed_dir)
+    Dir.chdir(dir)
     Dir["#{TARGET_MONTH}/*"].each do |file|
-      Logger.write_with_runtime(:compressed_file => File.basename(file)) do
-        Minitar::pack_file(file, out)
-      end
+      Minitar::pack_file(file, out)
     end
 
     out.close
   end
 end
-
-FileUtils.rm_rf(COMPRESSED_DIR)
