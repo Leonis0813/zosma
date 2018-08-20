@@ -19,10 +19,10 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       CSV.read(file, :converters => :all).each do |rate|
         csv << [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
       end
-      rates_file += csv.size
+      rates_file += csv.lineno
     end
 
-    id = Settings.import.columns.size.times.map.with_index(1) {|i| "@#{i}" }.join(',')
+    id = Settings.import.columns.size.times.map {|i| "@#{i + 1}" }.join(',')
     variable = Settings.import.columns.map.with_index(1) do |column, i|
       "#{column}=@#{i}"
     end.join(',')
@@ -45,8 +45,4 @@ unless rates.empty?
       csv << [rate.id, rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
     end
   end
-end
-
-if rates_file == rates.size
-  FileUtils.rm(TARGET_FILES)
 end
