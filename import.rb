@@ -9,8 +9,6 @@ TARGET_DATE = (Date.today - 2).strftime('%F')
 TARGET_FILES = Dir[File.join(Settings.import.src_dir, "*_#{TARGET_DATE}.csv")]
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir)
 
-rates_file = 0
-
 Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
   tmp_file_name = File.join(dir, 'rates.csv')
 
@@ -19,7 +17,6 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       CSV.read(file, :converters => :all).each do |rate|
         csv << [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
       end
-      rates_file += csv.lineno
     end
 
     id = Settings.import.columns.size.times.map {|i| "@#{i + 1}" }.join(',')
