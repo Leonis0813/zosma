@@ -5,6 +5,13 @@ mysql:
   username: 'root'
   password: '7QiSlC?4'
 
+logger:
+  time_format: '%Y/%m/%d %H:%M:%S.%6N'
+  path:
+    import: 'log/import.log'
+    compress: 'log/compress.log'
+    delete: 'log/delete.log'
+
 import:
   src_dir: '/mnt/smb'
   tmp_dir: 'tmp'
