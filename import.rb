@@ -14,9 +14,11 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
 
   TARGET_FILES.each do |file|
     CSV.open(tmp_file_name, 'w') do |csv|
-      CSV.read(file, :converters => :all).each do |rate|
-        csv << [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
-      end
+      rates = CSV.read(file, :converters => :all).map do |rate|
+        [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
+      end.uniq {|rate| [rate[0], rate[1]] }
+
+      rates.each {|rate| csv << rate }
     end
 
     id = Settings.import.columns.size.times.map {|i| "@#{i + 1}" }.join(',')
@@ -29,6 +31,10 @@ LOAD DATA LOCAL INFILE '#{tmp_file_name}'
   INTO TABLE #{Rate.table_name}
   FIELDS TERMINATED BY ',' (#{id}) SET #{variable}
 EOF
+    ActiveRecord::Base.connection.execute(sql)
+
+    rate_size = CSV.read(tmp_file_name).size
+    sql = "ALTER TABLE #{Rate.table_name} AUTO_INCREMENT = #{rate_size + 1}"
     ActiveRecord::Base.connection.execute(sql)
   end
 end
