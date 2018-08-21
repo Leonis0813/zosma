@@ -1,6 +1,7 @@
 require 'csv'
 require 'fileutils'
 require 'logger'
+require 'tmpdir'
 require_relative 'config/initialize'
 require_relative 'db/connect'
 Dir['models/*'].each {|f| require_relative f }
