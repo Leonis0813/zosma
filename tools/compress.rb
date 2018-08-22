@@ -1,32 +1,52 @@
 require 'fileutils'
+require 'logger'
 require 'minitar'
+require 'tmpdir'
 require 'zlib'
-require_relative '../lib/logger'
-require_relative '../config/settings'
+require_relative '../config/initialize'
 
 TARGET_MONTH = (Date.today << 1).strftime('%Y-%m')
-TMP_DIR = File.join(Settings.application_root, 'tmp')
-COMPRESSED_DIR = File.join(TMP_DIR, TARGET_MONTH)
-EXPORT_DIR = File.join(Settings.application_root, 'backup')
-COMPRESSED_FILES = Dir[File.join(EXPORT_DIR, "#{TARGET_MONTH}-*.csv")]
-GZIP_FILE = "#{TARGET_MONTH}.tar.gz"
+EXPORT_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir)
 
-FileUtils.mkdir_p(COMPRESSED_DIR)
+logger = Logger.new(Settings.logger.path.compress)
+logger.formatter = proc do |severity, datetime, progname, message|
+  time = datetime.utc.strftime(Settings.logger.time_format)
+  log = "[#{severity}] [#{time}]: #{message}"
+  puts log if ENV['STDOUT'] == 'on'
+  "#{log}\n"
+end
 
-Logger.write_with_runtime(:module => 'compress', :gzip_file => GZIP_FILE) do
-  Zlib::GzipWriter.open(File.join(EXPORT_DIR, GZIP_FILE), Zlib::BEST_COMPRESSION) do |gz|
-    out = Minitar::Output.new(gz)
+logger.info("==== Start compressing (month: #{TARGET_MONTH})")
+start_time = Time.now
 
-    FileUtils.cp(COMPRESSED_FILES, COMPRESSED_DIR)
-    Dir.chdir(TMP_DIR)
+Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
+  compressed_dir = File.join(dir, TARGET_MONTH)
+  FileUtils.mkdir_p(compressed_dir)
+
+  gzip_file = File.join(EXPORT_DIR, "#{TARGET_MONTH}.tar.gz")
+  Zlib::GzipWriter.open(gzip_file, Zlib::BEST_COMPRESSION) do |gzip|
+    out = Minitar::Output.new(gzip)
+
+    FileUtils.cp(Dir[File.join(EXPORT_DIR, "#{TARGET_MONTH}-*.csv")], compressed_dir)
+    Dir.chdir(dir)
     Dir["#{TARGET_MONTH}/*"].each do |file|
-      Logger.write_with_runtime(:compressed_file => File.basename(file)) do
-        Minitar::pack_file(file, out)
-      end
+      Minitar::pack_file(file, out)
+      logger.info(
+        :action => 'pack',
+        :csv_file => File.basename(file),
+        :lines => File.read(file).lines.size,
+        :size => File.stat(file).size,
+      )
     end
 
     out.close
   end
+
+  logger.info(
+    :action => 'compress',
+    :gzip_file => File.basename(gzip_file),
+    :size => File.stat(gzip_file).size
+  )
 end
 
-FileUtils.rm_rf(COMPRESSED_DIR)
+logger.info("==== Finish compressing (run_time: #{Time.now - start_time})")
