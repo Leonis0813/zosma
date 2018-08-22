@@ -10,7 +10,7 @@ logger:
   path:
     import: 'log/import.log'
     compress: 'log/compress.log'
-    delete: 'log/delete.log'
+    remove: 'log/remove.log'
 
 import:
   src_dir: '/mnt/smb'
