@@ -8,7 +8,7 @@ Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 TARGET_DATE = (Date.today - 2).strftime('%F')
 TARGET_FILES = Dir[File.join(Settings.import.src_dir, "*_#{TARGET_DATE}.csv")]
 
-logger = Logger.new(Settings.logger.path.delete)
+logger = Logger.new(Settings.logger.path.remove)
 logger.formatter = proc do |severity, datetime, progname, message|
   time = datetime.utc.strftime(Settings.logger.time_format)
   log = "[#{severity}] [#{time}]: #{message}"
