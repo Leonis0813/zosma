@@ -16,7 +16,7 @@ logger.formatter = proc do |severity, datetime, progname, message|
   "#{log}\n"
 end
 
-logger.info('Start compressing')
+logger.info("==== Start compressing (month: #{TARGET_MONTH})")
 start_time = Time.now
 
 Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
@@ -31,13 +31,22 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
     Dir.chdir(dir)
     Dir["#{TARGET_MONTH}/*"].each do |file|
       Minitar::pack_file(file, out)
-      logger.info(:csv_file => File.basename(file), :lines => File.read(file).lines.size, :size => File.stat(file).size)
+      logger.info(
+        :action => 'pack',
+        :csv_file => File.basename(file),
+        :lines => File.read(file).lines.size,
+        :size => File.stat(file).size,
+      )
     end
 
     out.close
   end
 
-  logger.info(:gzip_file => File.basename(gzip_file), :size => File.stat(gzip_file).size)
+  logger.info(
+    :action => 'compress',
+    :gzip_file => File.basename(gzip_file),
+    :size => File.stat(gzip_file).size
+  )
 end
 
-logger.info("Finish compressing (run_time: #{Time.now - start_time})")
+logger.info("==== Finish compressing (run_time: #{Time.now - start_time})")

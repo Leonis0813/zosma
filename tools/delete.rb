@@ -16,24 +16,31 @@ logger.formatter = proc do |severity, datetime, progname, message|
   "#{log}\n"
 end
 
-logger.info('Start removing')
+logger.info("==== Start removing (date: #{TARGET_DATE})")
 start_time = Time.now
 
 rates_file = TARGET_FILES.inject([]) do |rates, file|
-  CSV.read(file, :converters => :all).each do |rate|
-    rates << [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
-  end
-
-  logger.info(:file => File.basename(file), :lines => File.read(file).lines.size, :size => File.stat(file).size)
+  lines = CSV.read(file, :converters => :all)
+  lines.each {|rate| rates << [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]] }
+  logger.info(
+    :action => 'read',
+    :file => File.basename(file),
+    :lines => lines.size,
+    :size => File.stat(file).size
+  )
   rates
 end.uniq {|rate| [rate[0], rate[1]] }
 
 rates_db = Rate.where('DATE(`time`) = ?', TARGET_DATE)
-logger.info(:file_rate_size => rates_file.size, :db_rate_size => rates_db.size)
+logger.info(
+  :action => 'compare',
+  :file_rate_size => rates_file.size,
+  :db_rate_size => rates_db.size
+)
 
 if rates_file.size ==  rates_db.size
   FileUtils.rm(TARGET_FILES)
-  logger.info(:removed_files => TARGET_FILES)
+  logger.info(:action => 'remove', :removed_files => TARGET_FILES)
 end
 
-logger.info("Finish removing (run_time: #{Time.now - start_time})")
+logger.info("==== Finish removing (run_time: #{Time.now - start_time})")

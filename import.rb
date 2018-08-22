@@ -18,7 +18,7 @@ logger.formatter = proc do |severity, datetime, progname, message|
   "#{log}\n"
 end
 
-logger.info('==== Start importing')
+logger.info("==== Start importing (date: #{TARGET_DATE})")
 start_time = Time.now
 
 Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
@@ -51,7 +51,11 @@ EOF
 
     sql_start = Time.now
     ActiveRecord::Base.connection.execute(sql)
-    logger.info(:action => 'load', :line => File.read(tmp_file_name).lines.size, :runtime => Time.now - sql_start)
+    logger.info(
+      :action => 'load',
+      :line => File.read(tmp_file_name).lines.size,
+      :runtime => Time.now - sql_start
+    )
 
     rate_size = CSV.read(tmp_file_name).size
     sql = "ALTER TABLE #{Rate.table_name} AUTO_INCREMENT = #{rate_size + 1}"
@@ -69,7 +73,12 @@ unless rates.empty?
       csv << [rate.id, rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
     end
 
-    logger.info(:action => 'backup', :file => File.basename(backup_file), :lines => rates.size, :size => File.stat(backup_file).size)
+    logger.info(
+      :action => 'backup',
+      :file => File.basename(backup_file),
+      :lines => rates.size,
+      :size => File.stat(backup_file).size
+    )
   end
 end
 
