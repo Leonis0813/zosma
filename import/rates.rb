@@ -7,7 +7,7 @@ require_relative 'db/connect'
 Dir['models/*'].each {|f| require_relative f }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
-TARGET_FILES = Dir[File.join(Settings.import.src_dir, "*_#{TARGET_DATE}.csv")]
+TARGET_FILES = Dir[File.join(Settings.import.src_dir, "rates/*_#{TARGET_DATE}.csv")]
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir)
 
 logger = Logger.new(Settings.logger.path.import)
@@ -18,7 +18,7 @@ logger.formatter = proc do |severity, datetime, progname, message|
   "#{log}\n"
 end
 
-logger.info("==== Start importing (date: #{TARGET_DATE})")
+logger.info("==== Start importing rates (date: #{TARGET_DATE})")
 start_time = Time.now
 
 Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
@@ -38,15 +38,15 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       rates.each {|rate| csv << rate }
     end
 
-    id = Settings.import.columns.size.times.map {|i| "@#{i + 1}" }.join(',')
-    variable = Settings.import.columns.map.with_index(1) do |column, i|
+    ids = Settings.import.columns.size.times.map {|i| "@#{i + 1}" }
+    variables = Settings.import.columns.map.with_index(1) do |column, i|
       "#{column}=@#{i}"
-    end.join(',')
+    end
 
     sql = <<"EOF"
 LOAD DATA LOCAL INFILE '#{tmp_file_name}'
   INTO TABLE #{Rate.table_name}
-  FIELDS TERMINATED BY ',' (#{id}) SET #{variable}
+  FIELDS TERMINATED BY ',' (#{ids.join(',')}) SET #{variables.join(',')}
 EOF
 
     sql_start = Time.now
@@ -82,4 +82,4 @@ unless rates.empty?
   end
 end
 
-logger.info("==== Finish importing (run_time: #{Time.now - start_time})")
+logger.info("==== Finish importing rates (run_time: #{Time.now - start_time})")
