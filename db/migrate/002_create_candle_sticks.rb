@@ -4,7 +4,7 @@ class CreateCandleSticks < ActiveRecord::Migration
       t.datetime :from, :null => false
       t.datetime :to, :null => false
       t.string :pair, :null => false
-      t.string :interval, :null => false
+      t.string :period, :null => false
       t.float :open, :null => false
       t.float :close, :null => false
       t.float :high, :null => false
@@ -12,6 +12,6 @@ class CreateCandleSticks < ActiveRecord::Migration
       t.timestamps :null => false
     end
 
-    add_index :candle_sticks, [:from, :to, :pair, :interval], :unique => true
+    add_index :candle_sticks, [:from, :to, :pair, :period], :unique => true
   end
 end
