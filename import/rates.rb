@@ -7,7 +7,7 @@ require_relative 'db/connect'
 Dir['models/*'].each {|f| require_relative f }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
-TARGET_FILES = Dir[File.join(Settings.import.src_dir, "rates/*_#{TARGET_DATE}.csv")]
+TARGET_FILES = Dir[File.join(Settings.import.src_dir, "*_#{TARGET_DATE}.csv")]
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir)
 
 logger = Logger.new(Settings.logger.path.import)
