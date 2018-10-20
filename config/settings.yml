@@ -16,8 +16,20 @@ import:
   src_dir: '/mnt/smb'
   tmp_dir: 'tmp'
   backup_dir: 'backup'
-  columns:
-    - 'time'
-    - 'pair'
-    - 'bid'
-    - 'ask'
+  file:
+    rates:
+      headers:
+        - 'time'
+        - 'pair'
+        - 'bid'
+        - 'ask'
+    candle_sticks:
+      headers:
+        - 'from'
+        - 'to'
+        - 'pair'
+        - 'interval'
+        - 'open'
+        - 'close'
+        - 'high'
+        - 'low'
