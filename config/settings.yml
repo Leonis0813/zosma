@@ -13,17 +13,18 @@ logger:
     remove: 'log/remove.log'
 
 import:
-  src_dir: '/mnt/smb'
   tmp_dir: 'tmp'
   backup_dir: 'backup'
   file:
-    rates:
+    rate:
+      src_dir: '/mnt/smb'
       headers:
         - 'time'
         - 'pair'
         - 'bid'
         - 'ask'
-    candle_sticks:
+    candle_stick:
+      src_dir: '/mnt/smb/candle_sticks'
       headers:
         - 'from'
         - 'to'
