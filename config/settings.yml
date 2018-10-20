@@ -29,7 +29,7 @@ import:
         - 'from'
         - 'to'
         - 'pair'
-        - 'interval'
+        - 'period'
         - 'open'
         - 'close'
         - 'high'
