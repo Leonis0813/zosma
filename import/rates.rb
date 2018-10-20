@@ -7,7 +7,7 @@ require_relative 'db/connect'
 Dir['models/*'].each {|f| require_relative f }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
-TARGET_FILES = Dir[File.join(Settings.import.src_dir, "*_#{TARGET_DATE}.csv")]
+TARGET_FILES = Dir[File.join(Settings.import.file.rate.src_dir, "*_#{TARGET_DATE}.csv")]
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir)
 
 logger = Logger.new(Settings.logger.path.import)
@@ -38,10 +38,9 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       rates.each {|rate| csv << rate }
     end
 
-    ids = Settings.import.columns.size.times.map {|i| "@#{i + 1}" }
-    variables = Settings.import.columns.map.with_index(1) do |column, i|
-      "#{column}=@#{i}"
-    end
+    header = Settings.import.file.rate.headers
+    ids = headers.size.times.map {|i| "@#{i + 1}" }
+    variables = headers.map.with_index(1) {|header, i| "#{header}=@#{i}" }
 
     sql = <<"EOF"
 LOAD DATA LOCAL INFILE '#{tmp_file_name}'

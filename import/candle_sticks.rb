@@ -38,7 +38,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
 
     sql = <<"EOF"
 LOAD DATA LOCAL INFILE '#{tmp_file_name}'
-  INTO TABLE #{Rate.table_name}
+  INTO TABLE #{CandleStick.table_name}
   FIELDS TERMINATED BY ',' (#{ids.join(',')}) SET #{variables.join(',')}
 EOF
 
@@ -51,12 +51,12 @@ EOF
     )
 
     rate_size = CSV.read(tmp_file_name).size
-    sql = "ALTER TABLE #{Rate.table_name} AUTO_INCREMENT = #{rate_size + 1}"
+    sql = "ALTER TABLE #{CandleStick.table_name} AUTO_INCREMENT = #{rate_size + 1}"
     ActiveRecord::Base.connection.execute(sql)
   end
 end
 
-candle_sticks = Rate.where('DATE(`time`) = ?', TARGET_DATE)
+candle_sticks = CandleStick.where('DATE(`time`) = ?', TARGET_DATE)
 unless candle_sticks.empty?
   FileUtils.mkdir_p(BACKUP_DIR)
 
