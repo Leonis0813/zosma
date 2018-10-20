@@ -64,7 +64,7 @@ void OnTimer() {
     double high = iHigh(NULL, periods[i], 1);
     double low = iLow(NULL, periods[i], 1);
 
-    if(open != prev_open[i] && close != prev_close[i] && high != prev_high[i] && low != prev_low[i]) {
+    if(open != prev_open[i] || close != prev_close[i] || high != prev_high[i] || low != prev_low[i]) {
       string from = TimeToStr(now - periods[i] * 60, TIME_DATE | TIME_MINUTES);
       string to = TimeToStr(now - 60, TIME_DATE | TIME_MINUTES);
       StringReplace(from, ".", "-");
