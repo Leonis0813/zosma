@@ -2,9 +2,9 @@ require 'csv'
 require 'fileutils'
 require 'logger'
 require 'tmpdir'
-require_relative 'config/initialize'
-require_relative 'db/connect'
-Dir['models/*'].each {|f| require_relative f }
+require_relative '../config/initialize'
+require_relative '../db/connect'
+Dir['models/*'].each {|f| require_relative "../#{f}" }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
 TARGET_FILES = Dir[File.join(Settings.import.file.rate.src_dir, "*_#{TARGET_DATE}.csv")]
