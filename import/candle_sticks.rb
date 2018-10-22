@@ -2,9 +2,9 @@ require 'csv'
 require 'fileutils'
 require 'logger'
 require 'tmpdir'
-require_relative 'config/initialize'
-require_relative 'db/connect'
-Dir['models/*'].each {|f| require_relative f }
+require_relative '../config/initialize'
+require_relative '../db/connect'
+Dir['models/*'].each {|f| require_relative "../#{f}" }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
 TARGET_FILES = Dir[File.join(Settings.import.file.candle_stick.src_dir, "*_#{TARGET_DATE}.csv")]
@@ -33,7 +33,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
 
     headers = Settings.import.file.candle_stick.headers
     ids = headers.size.times.map {|i| "@#{i + 1}" }
-    variables = headers.map.with_index(1) {|header, i| "#{header}=@#{i}" }
+    variables = headers.map.with_index(1) {|header, i| "`#{header}`=@#{i}" }
     variables += %w[ created_at=now() updated_at=now() ]
 
     sql = <<"EOF"
@@ -56,14 +56,24 @@ EOF
   end
 end
 
-candle_sticks = CandleStick.where('DATE(`time`) = ?', TARGET_DATE)
+candle_sticks = CandleStick.where('DATE(`to`) = ?', TARGET_DATE)
 unless candle_sticks.empty?
   FileUtils.mkdir_p(BACKUP_DIR)
 
   backup_file = File.join(BACKUP_DIR, "#{TARGET_DATE}_candle_sticks.csv")
   CSV.open(backup_file, 'w') do |csv|
-    candle_sticks.each do |rate|
-      csv << [rate.id, rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
+    candle_sticks.each do |candle_stick|
+      csv << [
+        candle_stick.id,
+        candle_stick.from.strftime('%F %T'),
+        candle_stick.to.strftime('%F %T'),
+        candle_stick.pair,
+        candle_stick.period,
+        candle_stick.open,
+        candle_stick.close,
+        candle_stick.high,
+        candle_stick.low,
+      ]
     end
 
     logger.info(
