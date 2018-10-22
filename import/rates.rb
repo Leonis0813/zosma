@@ -38,7 +38,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       rates.each {|rate| csv << rate }
     end
 
-    header = Settings.import.file.rate.headers
+    headers = Settings.import.file.rate.headers
     ids = headers.size.times.map {|i| "@#{i + 1}" }
     variables = headers.map.with_index(1) {|header, i| "#{header}=@#{i}" }
 
