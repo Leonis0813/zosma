@@ -8,7 +8,7 @@ Dir['models/*'].each {|f| require_relative "../#{f}" }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
 TARGET_FILES = Dir[File.join(Settings.import.file.candle_stick.src_dir, "*_#{TARGET_DATE}.csv")]
-BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.backup_dir, 'candle_sticks')
+BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.candle_stick.backup_dir)
 
 logger = Logger.new(Settings.logger.path.import)
 logger.formatter = proc do |severity, datetime, progname, message|
@@ -60,7 +60,7 @@ candle_sticks = CandleStick.where('DATE(`to`) = ?', TARGET_DATE)
 unless candle_sticks.empty?
   FileUtils.mkdir_p(BACKUP_DIR)
 
-  backup_file = File.join(BACKUP_DIR, "#{TARGET_DATE}_candle_sticks.csv")
+  backup_file = File.join(BACKUP_DIR, "#{TARGET_DATE}.csv")
   CSV.open(backup_file, 'w') do |csv|
     candle_sticks.each do |candle_stick|
       csv << [

@@ -14,10 +14,10 @@ logger:
 
 import:
   tmp_dir: 'tmp'
-  backup_dir: 'backup'
   file:
     rate:
-      src_dir: '/mnt/smb'
+      src_dir: '/mnt/smb/rates'
+      backup_dir: 'backup/rates'
       headers:
         - 'time'
         - 'pair'
@@ -25,6 +25,7 @@ import:
         - 'ask'
     candle_stick:
       src_dir: '/mnt/smb/candle_sticks'
+      backup_dir: 'backup/candle_sticks'
       headers:
         - 'from'
         - 'to'
