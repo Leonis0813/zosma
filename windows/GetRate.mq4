@@ -33,7 +33,7 @@ int OnCalculate(const int rates_total, const int prev_calculated, const datetime
   MqlTick tick;
   SymbolInfoTick(Symbol(), tick);
 
-  int handle = FileOpen(Symbol() + "_" + date_str + ".csv", FILE_CSV | FILE_READ | FILE_WRITE, ',');
+  int handle = FileOpen("rates/" + Symbol() + "_" + date_str + ".csv", FILE_CSV | FILE_READ | FILE_WRITE, ',');
   FileSeek(handle, 0, SEEK_END);
   FileWrite(handle, datetime_str, Symbol(), tick.bid, tick.ask);
   FileClose(handle);
