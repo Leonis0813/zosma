@@ -37,11 +37,19 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       Zlib::GzipReader.open(tar_gz_file) do |file|
         Archive::Tar::Minitar::unpack(file, dir)
       end
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
+      logger.info(
+        :action => 'unpack',
+        :file => File.basename(tar_gz_file),
+        :size => File.stat(tar_gz_file).size
+      )
     elsif not csv_files.empty?
       FileUtils.cp(csv_files, dir)
+      logger.info(:action => 'copy', :files => csv_files)
     else
       csv_files = File.join(Settings.import.file.rate.src_dir, "*_#{yearmonth}-*.csv")
       FileUtils.cp(Dir[csv_files], dir)
+      logger.info(:action => 'copy', :files => csv_files)
     end
   end
 
@@ -63,8 +71,8 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
         end
         logger.info(
           :action => 'read',
-          :file => File.basename(file),
-          :size => File.stat(file).size
+          :file => File.basename(csv_file),
+          :size => File.stat(csv_file).size
         )
 
         before_size = rates.size
@@ -100,25 +108,25 @@ EOF
       sql = "ALTER TABLE #{Rate.table_name} AUTO_INCREMENT = #{rate_size + 1}"
       ActiveRecord::Base.connection.execute(sql)
     end
-  end
 
-  backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-  unless File.exists?(backup_file)
-    rates = Rate.where('DATE(`time`) = ?', date_string)
-    unless rates.empty?
-      FileUtils.mkdir_p(BACKUP_DIR)
+    backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
+    unless File.exists?(backup_file)
+      rates = Rate.where('DATE(`time`) = ?', date_string)
+      unless rates.empty?
+        FileUtils.mkdir_p(BACKUP_DIR)
 
-      CSV.open(backup_file, 'w') do |csv|
-        rates.each do |rate|
-          csv << [rate.id, rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
+        CSV.open(backup_file, 'w') do |csv|
+          rates.each do |rate|
+            csv << [rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
+          end
+
+          logger.info(
+            :action => 'backup',
+            :file => File.basename(backup_file),
+            :lines => rates.size,
+            :size => File.stat(backup_file).size
+          )
         end
-
-        logger.info(
-          :action => 'backup',
-          :file => File.basename(backup_file),
-          :lines => rates.size,
-          :size => File.stat(backup_file).size
-        )
       end
     end
   end
