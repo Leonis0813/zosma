@@ -1,7 +1,9 @@
 require 'csv'
 require 'fileutils'
 require 'logger'
+require 'minitar'
 require 'tmpdir'
+require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
 Dir['models/*'].each {|f| require_relative "../#{f}" }
@@ -32,7 +34,9 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
     csv_files = Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")]
 
     if File.exists?(tar_gz_file)
-    # unpack backup_file to tmp dir
+      Zlib::GzipReader.open(tar_gz_file) do |file|
+        Archive::Tar::Minitar::unpack(file, dir)
+      end
     elsif not csv_files.empty?
       FileUtils.cp(csv_files, dir)
     else
