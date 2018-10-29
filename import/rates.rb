@@ -45,11 +45,11 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       )
     elsif not csv_files.empty?
       FileUtils.cp(csv_files, dir)
-      logger.info(:action => 'copy', :files => csv_files)
+      logger.info(:action => 'copy', :files => csv_files.map {|file| File.basename(file) })
     else
       csv_files = File.join(Settings.import.file.rate.src_dir, "*_#{yearmonth}-*.csv")
       FileUtils.cp(Dir[csv_files], dir)
-      logger.info(:action => 'copy', :files => csv_files)
+      logger.info(:action => 'copy', :files => csv_files.map {|file| File.basename(file) })
     end
   end
 
@@ -110,7 +110,7 @@ EOF
     end
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-    unless File.exists?(backup_file)
+    unless File.exists?(backup_file) or File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
       rates = Rate.where('DATE(`time`) = ?', date_string)
       unless rates.empty?
         FileUtils.mkdir_p(BACKUP_DIR)

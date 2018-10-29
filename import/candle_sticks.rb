@@ -37,11 +37,19 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       Zlib::GzipReader.open(tar_gz_file) do |file|
         Archive::Tar::Minitar::unpack(file, dir)
       end
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
+      logger.info(
+        :action => 'unpack',
+        :file => File.basename(tar_gz_file),
+        :size => File.stat(tar_gz_file).size
+      )
     elsif not csv_files.empty?
       FileUtils.cp(csv_files, dir)
+      logger.info(:action => 'copy', :files => csv_files.map {|file| File.basename(file) })
     else
       csv_files = File.join(Settings.import.file.candle_stick.src_dir, "*_#{yearmonth}-*.csv")
       FileUtils.cp(Dir[csv_files], dir)
+      logger.info(:action => 'copy', :files => csv_files.map {|file| File.basename(file) })
     end
   end
 
@@ -90,35 +98,34 @@ EOF
       sql = "ALTER TABLE #{CandleStick.table_name} AUTO_INCREMENT = #{candle_stick_size + 1}"
       ActiveRecord::Base.connection.execute(sql)
     end
-  end
 
-  backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-  unless File.exists?(backup_file)
-    candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
-    unless candle_sticks.empty?
-      FileUtils.mkdir_p(BACKUP_DIR)
+    backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
+    unless File.exists?(backup_file) or File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
+      candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
+      unless candle_sticks.empty?
+        FileUtils.mkdir_p(BACKUP_DIR)
 
-      CSV.open(backup_file, 'w') do |csv|
-        candle_sticks.each do |candle_stick|
-          csv << [
-            candle_stick.id,
-            candle_stick.from.strftime('%F %T'),
-            candle_stick.to.strftime('%F %T'),
-            candle_stick.pair,
-            candle_stick.period,
-            candle_stick.open,
-            candle_stick.close,
-            candle_stick.high,
-            candle_stick.low,
-          ]
+        CSV.open(backup_file, 'w') do |csv|
+          candle_sticks.each do |candle_stick|
+            csv << [
+              candle_stick.from.strftime('%F %T'),
+              candle_stick.to.strftime('%F %T'),
+              candle_stick.pair,
+              candle_stick.period,
+              candle_stick.open,
+              candle_stick.close,
+              candle_stick.high,
+              candle_stick.low,
+            ]
+          end
+
+          logger.info(
+            :action => 'backup',
+            :file => File.basename(backup_file),
+            :lines => candle_sticks.size,
+            :size => File.stat(backup_file).size
+          )
         end
-
-        logger.info(
-          :action => 'backup',
-          :file => File.basename(backup_file),
-          :lines => candle_sticks.size,
-          :size => File.stat(backup_file).size
-        )
       end
     end
   end
