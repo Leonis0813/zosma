@@ -1,3 +1,6 @@
+# 2.0.2 (2018/10/29)
+- [FIX] bug of script to remove files
+
 # 2.0.1 (2018/10/27)
 - [UPDATE] tool to remove candle sticks
 

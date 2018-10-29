@@ -15,7 +15,13 @@ logger.formatter = proc do |severity, datetime, progname, message|
   "#{log}\n"
 end
 
-def remove(directory, target_class, index_key)
+logger.info("==== Start removing (date: #{TARGET_DATE})")
+start_time = Time.now
+
+[
+  ['rate', Rate, 'time'],
+  ['candle_stick', CandleStick, 'to'],
+].each do |directory, target_class, index_key|
   target_dir = Settings.import.file[directory]
 
   backup_file = File.join(target_dir.backup_dir, "#{TARGET_DATE}.csv")
@@ -35,17 +41,6 @@ def remove(directory, target_class, index_key)
     FileUtils.rm(src_files)
     logger.info(:action => 'remove', :removed_files => src_files)
   end
-
-end
-
-logger.info("==== Start removing (date: #{TARGET_DATE})")
-start_time = Time.now
-
-[
-  ['rate', Rate, 'time'],
-  ['candle_stick', CandleStick, 'to'],
-].each do |directory, target_class, index_key|
-  remove(directory, target_class, index_key)
 end
 
 logger.info("==== Finish removing (run_time: #{Time.now - start_time})")
