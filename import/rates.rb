@@ -31,7 +31,6 @@ end
 Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
   (from.strftime('%Y-%m')..to.strftime('%Y-%m')).each do |yearmonth|
     tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
-    csv_files = Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")]
 
     if File.exists?(tar_gz_file)
       Zlib::GzipReader.open(tar_gz_file) do |file|
@@ -43,13 +42,17 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
         :file => File.basename(tar_gz_file),
         :size => File.stat(tar_gz_file).size
       )
-    elsif not csv_files.empty?
-      FileUtils.cp(csv_files, dir)
-      logger.info(:action => 'copy', :files => csv_files.map {|file| File.basename(file) })
     else
-      csv_files = File.join(Settings.import.file.rate.src_dir, "*_#{yearmonth}-*.csv")
-      FileUtils.cp(Dir[csv_files], dir)
-      logger.info(:action => 'copy', :files => csv_files.map {|file| File.basename(file) })
+      [
+        Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")],
+        Dir[File.join(Settings.import.file.rate.src_dir, "*_#{yearmonth}-*.csv")],
+      ].each do |csv_files|
+        FileUtils.cp(csv_files, dir)
+        logger.info(
+          :action => 'copy',
+          :files => csv_files.map {|file| File.basename(file) },
+        )
+      end
     end
   end
 
@@ -110,7 +113,8 @@ EOF
     end
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-    unless File.exists?(backup_file) or File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
+    unless File.exists?(backup_file) or
+          File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
       rates = Rate.where('DATE(`time`) = ?', date_string)
       unless rates.empty?
         FileUtils.mkdir_p(BACKUP_DIR)

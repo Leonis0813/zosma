@@ -1,3 +1,6 @@
+# 2.1.1 (2018/10/30)
+- [FIX] bug of script to import rates and candlr sticks
+
 # 2.1.0 (2018/10/29)
 - [FIX] bug of script to remove files
 - [ADD] arguments to specify period to import
