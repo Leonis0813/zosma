@@ -18,8 +18,8 @@ end
 logger.info("==== Start compressing (month: #{TARGET_MONTH})")
 start_time = Time.now
 
-Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
-  %w[ rate candle_stick ].each do |type|
+%w[ rate candle_stick ].each do |type|
+  Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
     export_dir = File.join(APPLICATION_ROOT, Settings.import.file[type].backup_dir)
     compressed_dir = File.join(dir, TARGET_MONTH)
     FileUtils.mkdir_p(compressed_dir)
