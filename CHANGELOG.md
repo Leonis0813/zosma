@@ -1,3 +1,6 @@
+# 2.1.2 (2018/11/04)
+- [FIX] bug of script to compress backup data
+
 # 2.1.1 (2018/10/30)
 - [FIX] bug of script to import rates and candlr sticks
 
