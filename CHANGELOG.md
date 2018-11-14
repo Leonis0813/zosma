@@ -1,3 +1,6 @@
+# 2.1.3 (2018/11/14)
+- [FIX] file check when removing old files
+
 # 2.1.2 (2018/11/04)
 - [FIX] bug of script to compress backup data
 
