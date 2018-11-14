@@ -92,6 +92,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       headers = Settings.import.file.rate.headers
       ids = headers.size.times.map {|i| "@#{i + 1}" }
       variables = headers.map.with_index(1) {|header, i| "#{header}=@#{i}" }
+      variables += %w[ created_at=now() updated_at=now() ]
 
       sql = <<"EOF"
 LOAD DATA LOCAL INFILE '#{tmp_file_name}'
