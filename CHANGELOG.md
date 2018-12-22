@@ -1,3 +1,6 @@
+# 2.1.4 (2018/12/22)
+- [UPDATE] gems
+
 # 2.1.3 (2018/11/14)
 - [FIX] file check when removing old files
 - [ADD] created_at and updated_at to rates table
