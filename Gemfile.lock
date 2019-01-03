@@ -16,10 +16,10 @@ GEM
     arel (6.0.4)
     builder (3.2.3)
     concurrent-ruby (1.1.4)
-    config (1.7.0)
+    config (1.7.1)
       activesupport (>= 3.0)
       deep_merge (~> 1.2.1)
-      dry-validation (>= 0.10.4)
+      dry-validation (>= 0.12.2)
     deep_merge (1.2.1)
     dry-configurable (0.7.0)
       concurrent-ruby (~> 1.0)
@@ -76,4 +76,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
