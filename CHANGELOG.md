@@ -1,3 +1,6 @@
+# 3.0.1 (2019/03/02)
+- [UPDATE] gems
+
 # 3.0.0 (2019/02/14)
 - [ADD] script to import moving averages
 - [UPDATE] column name of candle_sticks table
