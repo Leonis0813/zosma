@@ -6,7 +6,7 @@ require 'tmpdir'
 require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
-Dir['models/*'].each {|f| require_relative "../#{f}" }
+require_relative '../models/candle_stick'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.candle_stick.backup_dir)
 
@@ -115,7 +115,7 @@ EOF
               candle_stick.from.strftime('%F %T'),
               candle_stick.to.strftime('%F %T'),
               candle_stick.pair,
-              candle_stick.period,
+              candle_stick.time_frame,
               candle_stick.open,
               candle_stick.close,
               candle_stick.high,
