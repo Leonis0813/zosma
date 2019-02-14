@@ -1,3 +1,6 @@
+# 3.0.0 (2019/02/14)
+- [ADD] script to import moving averages
+
 # 2.1.9 (2019/02/02)
 - [UPDATE] ruby version to 2.3.7
 
