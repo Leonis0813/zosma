@@ -1,4 +1,4 @@
-class CreateCandleSticks < ActiveRecord::Migration
+class CreateCandleSticks < ActiveRecord::Migration[4.2]
   def change
     create_table :candle_sticks do |t|
       t.datetime :from, :null => false
