@@ -1,5 +1,6 @@
 # 3.0.1 (2019/03/02)
 - [UPDATE] gems
+- [FIX] migration task
 
 # 3.0.0 (2019/02/14)
 - [ADD] script to import moving averages
