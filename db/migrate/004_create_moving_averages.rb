@@ -1,4 +1,4 @@
-class CreateMovingAverages < ActiveRecord::Migration
+class CreateMovingAverages < ActiveRecord::Migration[4.2]
   def change
     create_table :moving_averages do |t|
       t.datetime :time, :null => false
