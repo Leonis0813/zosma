@@ -1,4 +1,4 @@
-# 3.0.1 (2019/03/02)
+# 3.0.1 (2019/03/06)
 - [UPDATE] gems
 - [FIX] migration task
 
