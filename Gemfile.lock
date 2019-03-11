@@ -13,7 +13,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (9.0.0)
-    concurrent-ruby (1.1.4)
+    concurrent-ruby (1.1.5)
     config (1.7.1)
       activesupport (>= 3.0)
       deep_merge (~> 1.2.1)
