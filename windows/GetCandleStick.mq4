@@ -33,7 +33,7 @@ void writeCandleStick(int index, int handle, datetime now) {
   }
 }
 
-void reserFlag() {
+void resetFlag() {
   for(int i=0;i<TIME_FRAME_SIZE;i++) {
     is_written[i] = false;
   }
@@ -84,29 +84,29 @@ void OnTimer() {
       }
 
       if(TimeMinute(now) % 15 == 0) {
-        writeMovingAverage(2, handle, now);
+        writeCandleStick(2, handle, now);
       }
 
       if(TimeMinute(now) % 30 == 0) {
-        writeMovingAverage(3, handle, now);
+        writeCandleStick(3, handle, now);
       }
 
       if(TimeMinute(now) == 0) {
-        writeMovingAverage(4, handle, now);
+        writeCandleStick(4, handle, now);
 
         if(TimeHour(now) % 4 == 0) {
-          writeMovingAverage(5, handle, now);
+          writeCandleStick(5, handle, now);
         }
 
         if(TimeHour(now) == 0) {
-          writeMovingAverage(6, handle, now);
+          writeCandleStick(6, handle, now);
 
           if(TimeDayOfWeek(now) == 0) {
-            writeMovingAverage(7, handle, now);
+            writeCandleStick(7, handle, now);
           }
 
           if(TimeDay(now) == 1) {
-            writeMovingAverage(8, handle, now);
+            writeCandleStick(8, handle, now);
           }
         }
       }

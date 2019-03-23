@@ -34,7 +34,7 @@ void writeMovingAverage(int index, int handle, datetime now) {
   }
 }
 
-void reserFlag() {
+void resetFlag() {
   for(int i=0;i<TIME_FRAME_SIZE;i++) {
     is_written[i] = false;
   }
