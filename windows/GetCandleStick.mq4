@@ -30,7 +30,7 @@ void writeCandleStick(int index, int handle, datetime now) {
 
     FileSeek(handle, 0, SEEK_END);
     FileWrite(handle, from + ":00", to + ":59", Symbol(), time_frames_str[index], open, close, high, low);
-    is_written[index] = true
+    is_written[index] = true;
   }
 }
 
