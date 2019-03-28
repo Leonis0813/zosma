@@ -1,3 +1,7 @@
+# 3.0.3 (2019/03/28)
+- [FIX] mql scripts to get indicators per second
+- [ADD] pairs to collect
+
 # 3.0.2 (2019/03/24)
 - [UPDATE] gems
 
