@@ -1,3 +1,6 @@
+# 3.0.5 (2019/04/11)
+- [UPDATE] gems
+
 # 3.0.4 (2019/04/01)
 - [REFACTOR] logger
 - [UPDATE] script to remove moving averages
