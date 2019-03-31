@@ -1,3 +1,30 @@
+# 3.0.3 (2019/03/28)
+- [FIX] mql scripts to get indicators per second
+- [ADD] pairs to collect
+
+# 3.0.2 (2019/03/24)
+- [UPDATE] gems
+
+# 3.0.1 (2019/03/02)
+- [UPDATE] gems
+- [FIX] migration task
+
+# 3.0.0 (2019/02/14)
+- [ADD] script to import moving averages
+- [UPDATE] column name of candle_sticks table
+
+# 2.1.9 (2019/02/02)
+- [UPDATE] ruby version to 2.3.7
+
+# 2.1.8 (2019/01/31)
+- [UPDATE] gems
+
+# 2.1.7 (2019/01/06)
+- [UPDATE] gems
+
+# 2.1.6 (2019/01/03)
+- [UPDATE] gems
+
 # 2.1.5 (2018/12/23)
 - [UPDATE] gems
 

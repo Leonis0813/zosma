@@ -18,20 +18,9 @@ import:
     rate:
       src_dir: '/mnt/smb/rates'
       backup_dir: 'backup/rates'
-      headers:
-        - 'time'
-        - 'pair'
-        - 'bid'
-        - 'ask'
     candle_stick:
       src_dir: '/mnt/smb/candle_sticks'
       backup_dir: 'backup/candle_sticks'
-      headers:
-        - 'from'
-        - 'to'
-        - 'pair'
-        - 'period'
-        - 'open'
-        - 'close'
-        - 'high'
-        - 'low'
+    moving_average:
+      src_dir: '/mnt/smb/moving_averages'
+      backup_dir: 'backup/moving_averages'
