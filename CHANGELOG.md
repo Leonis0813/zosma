@@ -1,3 +1,7 @@
+# 3.0.4 (2019/04/01)
+- [REFACTOR] logger
+- [UPDATE] script to remove moving averages
+
 # 3.0.3 (2019/03/28)
 - [FIX] mql scripts to get indicators per second
 - [ADD] pairs to collect
