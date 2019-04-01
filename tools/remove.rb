@@ -14,6 +14,7 @@ start_time = Time.now
 [
   ['rate', Rate, 'time'],
   ['candle_stick', CandleStick, 'to'],
+  ['moving_average', MovingAverage, 'time'],
 ].each do |directory, target_class, index_key|
   target_dir = Settings.import.file[directory]
 
