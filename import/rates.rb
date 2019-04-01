@@ -1,22 +1,15 @@
 require 'csv'
 require 'fileutils'
-require 'logger'
 require 'minitar'
 require 'tmpdir'
 require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
+require_relative '../lib/zosma_logger'
 Dir['models/*'].each {|f| require_relative "../#{f}" }
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.rate.backup_dir)
-
-logger = Logger.new(Settings.logger.path.import)
-logger.formatter = proc do |severity, datetime, progname, message|
-  time = datetime.utc.strftime(Settings.logger.time_format)
-  log = "[#{severity}] [#{time}]: #{message}"
-  puts log if ENV['STDOUT'] == 'on'
-  "#{log}\n"
-end
+logger = ZosmaLogger.new(Settings.logger.path.import)
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
