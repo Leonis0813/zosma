@@ -1,19 +1,12 @@
 require 'fileutils'
-require 'logger'
 require 'minitar'
 require 'tmpdir'
 require 'zlib'
 require_relative '../config/initialize'
+require_relative '../lib/zosma_logger'
 
 TARGET_MONTH = (Date.today << 1).strftime('%Y-%m')
-
-logger = Logger.new(Settings.logger.path.compress)
-logger.formatter = proc do |severity, datetime, progname, message|
-  time = datetime.utc.strftime(Settings.logger.time_format)
-  log = "[#{severity}] [#{time}]: #{message}"
-  puts log if ENV['STDOUT'] == 'on'
-  "#{log}\n"
-end
+logger = ZosmaLogger.new(Settings.logger.path.compress)
 
 logger.info("==== Start compressing (month: #{TARGET_MONTH})")
 start_time = Time.now
