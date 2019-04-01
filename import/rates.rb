@@ -6,7 +6,7 @@ require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/zosma_logger'
-Dir['models/*'].each {|f| require_relative "../#{f}" }
+require_relative '../models/rate'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.rate.backup_dir)
 logger = ZosmaLogger.new(Settings.logger.path.import)
