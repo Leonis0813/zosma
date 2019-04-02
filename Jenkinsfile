@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   parameters {
-    string(name: 'ZOSMA_BRANCH', defaultValue: '', description: 'デプロイするブランチ')
+    string(name: 'ZOSMA_VERSION', defaultValue: '', description: 'デプロイするバージョン')
     string(name: 'SUBRA_BRANCH', defaultValue: 'master', description: 'Chefのブランチ')
     choice(name: 'SCOPE', choices: 'app\nfull', description: 'デプロイ範囲')
   }
@@ -17,11 +17,9 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          sh 'printenv'
-          echo params.ZOSMA_BRANCH
-          def version = (params.ZOSMA_BRANCH == "" ? env.GIT_BRANCH : params.ZOSMA_BRANCH)
+          def version = (params.ZOSMA_VERSION == "" ? env.GIT_BRANCH : params.ZOSMA_VERSION)
           def recipe = ('app' == params.SCOPE ? 'app' : 'default')
-          sh "sudo ZOSMA_BRANCH=${version} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
+          sh "sudo ZOSMA_VERSION=${version} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
         }
       }
     }
