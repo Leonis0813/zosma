@@ -15,8 +15,8 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        params.SCOPE = ('app' == params.SCOPE ?: 'default')
-        sh "sudo ZOSMA_BRANCH=${params.ZOSMA_BRANCH} chef-client -z -r zosma::${params.SCOPE} -E ${env.ENVIRONMENT}"
+        def recipe = ('app' == params.SCOPE ?: 'default')
+        sh "sudo ZOSMA_BRANCH=${params.ZOSMA_BRANCH} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
       }
     }
   }
