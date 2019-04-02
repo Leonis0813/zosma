@@ -17,7 +17,7 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          def version = (params.ZOSMA_VERSION == "" ? env.GIT_BRANCH : params.ZOSMA_VERSION)
+          def version = (params.ZOSMA_VERSION == '' ? env.GIT_BRANCH : params.ZOSMA_VERSION)
           version = version.replaceFirst(/^.+\//, '')
           def recipe = ('app' == params.SCOPE ? 'app' : 'default')
           sh "sudo ZOSMA_VERSION=${version} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
