@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   parameters {
-    string(name: 'ZOSMA_BRANCH', description: 'デプロイするブランチ')
+    string(name: 'ZOSMA_BRANCH', defaultValue: '', description: 'デプロイするブランチ')
     string(name: 'SUBRA_BRANCH', defaultValue: 'master', description: 'Chefのブランチ')
     choice(name: 'SCOPE', choices: 'app\nfull', description: 'デプロイ範囲')
   }
