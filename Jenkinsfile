@@ -19,7 +19,7 @@ pipeline {
         script {
           sh 'printenv'
           echo params.ZOSMA_BRANCH
-          def version = (params.ZOSMA_BRANCH == null ? env.GIT_BRANCH : params.ZOSMA_BRANCH)
+          def version = (params.ZOSMA_BRANCH == "" ? env.GIT_BRANCH : params.ZOSMA_BRANCH)
           def recipe = ('app' == params.SCOPE ? 'app' : 'default')
           sh "sudo ZOSMA_BRANCH=${version} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
         }
