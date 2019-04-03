@@ -8,19 +8,16 @@ pipeline {
   }
 
   stages {
-    stage('Clone Chef') {
-      steps {
-        git url: 'https://github.com/Leonis0813/subra.git', branch: params.SUBRA_BRANCH
-      }
-    }
-
     stage('Deploy') {
       steps {
-        script {
-          def version = (params.ZOSMA_VERSION == '' ? env.GIT_BRANCH : params.ZOSMA_VERSION)
-          version = version.replaceFirst(/^.+\//, '')
-          def recipe = ('app' == params.SCOPE ? 'app' : 'default')
-          sh "sudo ZOSMA_VERSION=${version} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
+        ws("${env.WORKSPACE}/../chef") {
+          script {
+            git url: 'https://github.com/Leonis0813/subra.git', branch: params.SUBRA_BRANCH
+            def version = (params.ZOSMA_VERSION == '' ? env.GIT_BRANCH : params.ZOSMA_VERSION)
+            version = version.replaceFirst(/^.+\//, '')
+            def recipe = ('app' == params.SCOPE ? 'app' : 'default')
+            sh "sudo ZOSMA_VERSION=${version} chef-client -z -r zosma::${recipe} -E ${env.ENVIRONMENT}"
+          }
         }
       }
     }
