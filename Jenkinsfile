@@ -1,6 +1,10 @@
 pipeline {
   agent any
 
+  options {
+    disableConcurrentBuilds()
+  }
+
   parameters {
     string(name: 'ZOSMA_VERSION', defaultValue: '', description: 'デプロイするバージョン')
     string(name: 'SUBRA_BRANCH', defaultValue: 'master', description: 'Chefのブランチ')
