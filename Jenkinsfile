@@ -4,7 +4,7 @@ pipeline {
   parameters {
     string(name: 'ZOSMA_VERSION', defaultValue: '', description: 'デプロイするバージョン')
     string(name: 'SUBRA_BRANCH', defaultValue: 'master', description: 'Chefのブランチ')
-    choice(name: 'SCOPE', choices: 'app\nfull', description: 'デプロイ範囲')
+    choice(name: 'SCOPE', choices: 'full\napp', description: 'デプロイ範囲')
   }
 
   stages {
