@@ -13,6 +13,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (9.0.0)
+    ast (2.4.0)
     concurrent-ruby (1.1.5)
     config (1.7.1)
       activesupport (>= 3.0)
@@ -50,18 +51,34 @@ GEM
     hashie (3.6.0)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
+    jaro_winkler (1.5.2)
     minitar (0.8)
     minitar-cli (0.8)
       minitar (~> 0.8.0)
       powerbar (~> 1.0)
     minitest (5.11.3)
     mysql2 (0.5.2)
+    parallel (1.17.0)
+    parser (2.6.3.0)
+      ast (~> 2.4.0)
     powerbar (1.0.18)
       hashie (>= 1.1.0)
+    rainbow (3.0.0)
     rake (12.3.2)
+    rubocop (0.68.1)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.5, != 2.5.1.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.6)
+    rubocop-performance (1.1.0)
+      rubocop (>= 0.67.0)
+    ruby-progressbar (1.10.0)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    unicode-display_width (1.5.0)
 
 PLATFORMS
   ruby
@@ -73,6 +90,8 @@ DEPENDENCIES
   minitar-cli
   mysql2
   rake
+  rubocop
+  rubocop-performance
 
 BUNDLED WITH
    1.17.3
