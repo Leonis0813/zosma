@@ -27,7 +27,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
 
     if File.exists?(tar_gz_file)
       Zlib::GzipReader.open(tar_gz_file) do |file|
-        Archive::Tar::Minitar::unpack(file, dir)
+        Archive::Tar::Minitar.unpack(file, dir)
       end
       FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
       logger.info(

@@ -24,7 +24,7 @@ start_time = Time.now
       FileUtils.cp(Dir[File.join(export_dir, "#{TARGET_MONTH}-*.csv")], compressed_dir)
       Dir.chdir(dir)
       Dir["#{TARGET_MONTH}/*"].each do |file|
-        Minitar::pack_file(file, out)
+        Minitar.pack_file(file, out)
         logger.info(
           action: 'pack',
           csv_file: File.basename(file),
