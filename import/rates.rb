@@ -31,9 +31,9 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       end
       FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
       logger.info(
-        :action => 'unpack',
-        :file => File.basename(tar_gz_file),
-        :size => File.stat(tar_gz_file).size,
+        action: 'unpack',
+        file: File.basename(tar_gz_file),
+        size: File.stat(tar_gz_file).size,
       )
     else
       [
@@ -42,8 +42,8 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       ].each do |csv_files|
         FileUtils.cp(csv_files, dir)
         logger.info(
-          :action => 'copy',
-          :files => csv_files.map {|file| File.basename(file) },
+          action: 'copy',
+          files: csv_files.map {|file| File.basename(file) },
         )
       end
     end
@@ -62,21 +62,21 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
 
     target_files.each do |csv_file|
       CSV.open(tmp_file_name, 'w') do |csv|
-        rates = CSV.read(csv_file, :converters => :all).map do |rate|
+        rates = CSV.read(csv_file, converters: :all).map do |rate|
           [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
         end
         logger.info(
-          :action => 'read',
-          :file => File.basename(csv_file),
-          :size => File.stat(csv_file).size,
+          action: 'read',
+          file: File.basename(csv_file),
+          size: File.stat(csv_file).size,
         )
 
         before_size = rates.size
         rates.uniq! {|rate| [rate[0], rate[1]] }
         logger.info(
-          :action => 'unique',
-          :before_size => before_size,
-          :after_size => rates.size,
+          action: 'unique',
+          before_size: before_size,
+          after_size: rates.size,
         )
 
         rates.each {|rate| csv << rate }
@@ -97,9 +97,9 @@ EOF
       sql_start = Time.now
       ActiveRecord::Base.connection.execute(sql)
       logger.info(
-        :action => 'load',
-        :line => rate_size,
-        :runtime => Time.now - sql_start,
+        action: 'load',
+        line: rate_size,
+        runtime: Time.now - sql_start,
       )
 
       sql = "ALTER TABLE #{Rate.table_name} AUTO_INCREMENT = #{rate_size + 1}"
@@ -119,10 +119,10 @@ EOF
           end
 
           logger.info(
-            :action => 'backup',
-            :file => File.basename(backup_file),
-            :lines => rates.size,
-            :size => File.stat(backup_file).size,
+            action: 'backup',
+            file: File.basename(backup_file),
+            lines: rates.size,
+            size: File.stat(backup_file).size,
           )
         end
       end

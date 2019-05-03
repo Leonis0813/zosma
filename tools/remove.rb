@@ -23,19 +23,19 @@ start_time = Time.now
 
   line_size = CSV.read(backup_file).size
   logger.info(
-    :action => 'read',
-    :file => File.basename(backup_file),
-    :lines => line_size,
-    :size => File.stat(backup_file).size,
+    action: 'read',
+    file: File.basename(backup_file),
+    lines: line_size,
+    size: File.stat(backup_file).size,
   )
 
   db_size = target_class.where("DATE(`#{index_key}`) = ?", TARGET_DATE).size
-  logger.info(:action => 'compare', :backup_file_size => line_size, :db_size => db_size)
+  logger.info(action: 'compare', backup_file_size: line_size, db_size: db_size)
 
   if line_size == db_size
     src_files = Dir[File.join(target_dir.src_dir, "*_#{TARGET_DATE}.csv")]
     FileUtils.rm(src_files)
-    logger.info(:action => 'remove', :removed_files => src_files)
+    logger.info(action: 'remove', removed_files: src_files)
   end
 end
 

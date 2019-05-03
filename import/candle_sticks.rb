@@ -31,9 +31,9 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       end
       FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
       logger.info(
-        :action => 'unpack',
-        :file => File.basename(tar_gz_file),
-        :size => File.stat(tar_gz_file).size,
+        action: 'unpack',
+        file: File.basename(tar_gz_file),
+        size: File.stat(tar_gz_file).size,
       )
     else
       [
@@ -42,8 +42,8 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       ].each do |csv_files|
         FileUtils.cp(csv_files, dir)
         logger.info(
-          :action => 'copy',
-          :files => csv_files.map {|file| File.basename(file) },
+          action: 'copy',
+          files: csv_files.map {|file| File.basename(file) },
         )
       end
     end
@@ -64,9 +64,9 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       CSV.open(tmp_file_name, 'w') do |csv|
         candle_sticks = CSV.read(file)
         logger.info(
-          :action => 'read',
-          :file => File.basename(file),
-          :size => File.stat(file).size,
+          action: 'read',
+          file: File.basename(file),
+          size: File.stat(file).size,
         )
         candle_sticks.each {|candle_stick| csv << candle_stick }
       end
@@ -86,9 +86,9 @@ EOF
       sql_start = Time.now
       ActiveRecord::Base.connection.execute(sql)
       logger.info(
-        :action => 'load',
-        :line => candle_stick_size,
-        :runtime => Time.now - sql_start,
+        action: 'load',
+        line: candle_stick_size,
+        runtime: Time.now - sql_start,
       )
 
       sql = "ALTER TABLE #{CandleStick.table_name} AUTO_INCREMENT = #{candle_stick_size + 1}"
@@ -117,10 +117,10 @@ EOF
           end
 
           logger.info(
-            :action => 'backup',
-            :file => File.basename(backup_file),
-            :lines => candle_sticks.size,
-            :size => File.stat(backup_file).size,
+            action: 'backup',
+            file: File.basename(backup_file),
+            lines: candle_sticks.size,
+            size: File.stat(backup_file).size,
           )
         end
       end

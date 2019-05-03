@@ -26,10 +26,10 @@ start_time = Time.now
       Dir["#{TARGET_MONTH}/*"].each do |file|
         Minitar::pack_file(file, out)
         logger.info(
-          :action => 'pack',
-          :csv_file => File.basename(file),
-          :lines => File.read(file).lines.size,
-          :size => File.stat(file).size,
+          action: 'pack',
+          csv_file: File.basename(file),
+          lines: File.read(file).lines.size,
+          size: File.stat(file).size,
         )
       end
 
@@ -37,9 +37,9 @@ start_time = Time.now
     end
 
     logger.info(
-      :action => 'compress',
-      :gzip_file => File.basename(gzip_file),
-      :size => File.stat(gzip_file).size,
+      action: 'compress',
+      gzip_file: File.basename(gzip_file),
+      size: File.stat(gzip_file).size,
     )
   end
 end
