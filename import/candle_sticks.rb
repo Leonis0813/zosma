@@ -33,7 +33,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       logger.info(
         :action => 'unpack',
         :file => File.basename(tar_gz_file),
-        :size => File.stat(tar_gz_file).size
+        :size => File.stat(tar_gz_file).size,
       )
     else
       [
@@ -66,7 +66,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
         logger.info(
           :action => 'read',
           :file => File.basename(file),
-          :size => File.stat(file).size
+          :size => File.stat(file).size,
         )
         candle_sticks.each {|candle_stick| csv << candle_stick }
       end
@@ -88,7 +88,7 @@ EOF
       logger.info(
         :action => 'load',
         :line => candle_stick_size,
-        :runtime => Time.now - sql_start
+        :runtime => Time.now - sql_start,
       )
 
       sql = "ALTER TABLE #{CandleStick.table_name} AUTO_INCREMENT = #{candle_stick_size + 1}"
@@ -120,7 +120,7 @@ EOF
             :action => 'backup',
             :file => File.basename(backup_file),
             :lines => candle_sticks.size,
-            :size => File.stat(backup_file).size
+            :size => File.stat(backup_file).size,
           )
         end
       end

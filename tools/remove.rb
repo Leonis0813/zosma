@@ -26,7 +26,7 @@ start_time = Time.now
     :action => 'read',
     :file => File.basename(backup_file),
     :lines => line_size,
-    :size => File.stat(backup_file).size
+    :size => File.stat(backup_file).size,
   )
 
   db_size = target_class.where("DATE(`#{index_key}`) = ?", TARGET_DATE).size

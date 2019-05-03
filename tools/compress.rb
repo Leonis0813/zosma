@@ -39,7 +39,7 @@ start_time = Time.now
     logger.info(
       :action => 'compress',
       :gzip_file => File.basename(gzip_file),
-      :size => File.stat(gzip_file).size
+      :size => File.stat(gzip_file).size,
     )
   end
 end

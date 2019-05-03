@@ -33,7 +33,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       logger.info(
         :action => 'unpack',
         :file => File.basename(tar_gz_file),
-        :size => File.stat(tar_gz_file).size
+        :size => File.stat(tar_gz_file).size,
       )
     else
       [
@@ -68,7 +68,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
         logger.info(
           :action => 'read',
           :file => File.basename(csv_file),
-          :size => File.stat(csv_file).size
+          :size => File.stat(csv_file).size,
         )
 
         before_size = rates.size
@@ -76,7 +76,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
         logger.info(
           :action => 'unique',
           :before_size => before_size,
-          :after_size => rates.size
+          :after_size => rates.size,
         )
 
         rates.each {|rate| csv << rate }
@@ -99,7 +99,7 @@ EOF
       logger.info(
         :action => 'load',
         :line => rate_size,
-        :runtime => Time.now - sql_start
+        :runtime => Time.now - sql_start,
       )
 
       sql = "ALTER TABLE #{Rate.table_name} AUTO_INCREMENT = #{rate_size + 1}"
@@ -122,7 +122,7 @@ EOF
             :action => 'backup',
             :file => File.basename(backup_file),
             :lines => rates.size,
-            :size => File.stat(backup_file).size
+            :size => File.stat(backup_file).size,
           )
         end
       end
