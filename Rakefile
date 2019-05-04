@@ -3,19 +3,20 @@ require 'logger'
 require 'mysql2'
 require_relative 'config/initialize'
 
-task :default => :migrate
+task default: :migrate
 
 namespace :db do
   desc 'Drop and create database'
-  task :reset => :environment do
+  task reset: :environment do
     ActiveRecord::Tasks::DatabaseTasks.drop_current(ENV['RAILS_ENV'])
     ActiveRecord::Tasks::DatabaseTasks.create_current(ENV['RAILS_ENV'])
   end
 
   desc 'Migrate database'
-  task :migrate => :environment do
+  task migrate: :environment do
     ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
-    ActiveRecord::MigrationContext.new('db/migrate').migrate(ENV['VERSION'] ? ENV['VERSION'].to_i : nil)
+    ActiveRecord::MigrationContext.new('db/migrate')
+                                  .migrate(ENV['VERSION'] ? ENV['VERSION'].to_i : nil)
   end
 
   task :environment do

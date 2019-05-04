@@ -1,8 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rake'
 gem 'activerecord'
-gem 'mysql2'
 gem 'config'
 gem 'minitar'
 gem 'minitar-cli'
+gem 'mysql2'
+gem 'rake'
+gem 'rubocop'
+gem 'rubocop-performance'
