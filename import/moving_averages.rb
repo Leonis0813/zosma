@@ -97,7 +97,7 @@ EOF
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
     next if File.exists?(backup_file) or
-      File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
+            File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
     moving_averages = MovingAverage.where('DATE(`time`) = ?', date_string)
     next if moving_averages.empty?

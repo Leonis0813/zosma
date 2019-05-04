@@ -97,7 +97,7 @@ EOF
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
     next if File.exists?(backup_file) or
-      File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
+            File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
     candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
     next if candle_sticks.empty?
