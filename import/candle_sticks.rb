@@ -71,10 +71,10 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
         candle_sticks.each {|candle_stick| csv << candle_stick }
       end
 
-      headers = CandleStick.attribute_names - %w[ id created_at updated_at ]
+      headers = CandleStick.attribute_names - %w[id created_at updated_at]
       ids = headers.size.times.map {|i| "@#{i + 1}" }
       variables = headers.map.with_index(1) {|header, i| "`#{header}`=@#{i}" }
-      variables += %w[ created_at=now() updated_at=now() ]
+      variables += %w[created_at=now() updated_at=now()]
 
       sql = <<"EOF"
 LOAD DATA LOCAL INFILE '#{tmp_file_name}'
