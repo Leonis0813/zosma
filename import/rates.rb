@@ -60,15 +60,15 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
                      Dir[File.join(dir, "*_#{date_string}.csv")]
                    end
 
-    target_files.each do |csv_file|
+    target_files.each do |target_file|
       CSV.open(tmp_file_name, 'w') do |csv|
-        rates = CSV.read(csv_file, converters: :all).map do |rate|
+        rates = CSV.read(target_file, converters: :all).map do |rate|
           [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
         end
         logger.info(
           action: 'read',
-          file: File.basename(csv_file),
-          size: File.stat(csv_file).size,
+          file: File.basename(target_file),
+          size: File.stat(target_file).size,
         )
 
         before_size = rates.size
