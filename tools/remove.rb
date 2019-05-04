@@ -19,7 +19,7 @@ start_time = Time.now
   target_dir = Settings.import.file[directory]
 
   backup_file = File.join(target_dir.backup_dir, "#{TARGET_DATE}.csv")
-  next unless File.exists?(backup_file)
+  next unless File.exist?(backup_file)
 
   line_size = CSV.read(backup_file).size
   logger.info(

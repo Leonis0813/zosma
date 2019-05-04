@@ -25,7 +25,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
   (from.strftime('%Y-%m')..to.strftime('%Y-%m')).each do |yearmonth|
     tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
 
-    if File.exists?(tar_gz_file)
+    if File.exist?(tar_gz_file)
       Zlib::GzipReader.open(tar_gz_file) do |file|
         Archive::Tar::Minitar.unpack(file, dir)
       end
@@ -54,7 +54,7 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
   (from..to).each do |date|
     date_string = date.strftime('%F')
     csv_file = File.join(dir, "#{date_string}.csv")
-    target_files = if File.exists?(csv_file)
+    target_files = if File.exist?(csv_file)
                      [csv_file]
                    else
                      Dir[File.join(dir, "*_#{date_string}.csv")]
@@ -107,8 +107,8 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
     end
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-    next if File.exists?(backup_file) or
-            File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
+    next if File.exist?(backup_file) or
+            File.exist?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
     rates = Rate.where('DATE(`time`) = ?', date_string)
     next if rates.empty?
