@@ -1,0 +1,56 @@
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+
+Layout/SpaceInsideBlockBraces:
+  SpaceBeforeBlockParameters: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: 'no_space'
+
+Metrics/AbcSize:
+  Max: 40
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+  Max: 40
+
+Metrics/LineLength:
+  Max: 89
+
+Metrics/MethodLength:
+  Max: 40
+
+Style/AndOr:
+  Enabled: false
+
+Style/Encoding:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/LambdaCall:
+  EnforcedStyle: 'braces'
+
+Style/Not:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: 'comma'
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: 'comma'
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: 'comma'
