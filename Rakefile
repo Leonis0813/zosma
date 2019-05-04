@@ -15,7 +15,8 @@ namespace :db do
   desc 'Migrate database'
   task migrate: :environment do
     ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
-    ActiveRecord::MigrationContext.new('db/migrate').migrate(ENV['VERSION'] ? ENV['VERSION'].to_i : nil)
+    ActiveRecord::MigrationContext.new('db/migrate')
+                                  .migrate(ENV['VERSION'] ? ENV['VERSION'].to_i : nil)
   end
 
   task :environment do

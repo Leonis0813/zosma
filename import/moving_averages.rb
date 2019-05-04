@@ -38,9 +38,10 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
       size: File.stat(tar_gz_file).size,
     )
   else
+    src_dir = Settings.import.file.moving_average.src_dir
     [
       Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")],
-      Dir[File.join(Settings.import.file.moving_average.src_dir, "*_#{yearmonth}-*.csv")],
+      Dir[File.join(src_dir, "*_#{yearmonth}-*.csv")],
     ].each do |csv_files|
       FileUtils.cp(csv_files, dir)
       logger.info(
