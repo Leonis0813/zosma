@@ -33,6 +33,7 @@ start_time = Time.now
   logger.info(action: 'compare', backup_file_size: line_size, db_size: db_size)
 
   next unless line_size == db_size
+
   src_files = Dir[File.join(target_dir.src_dir, "*_#{TARGET_DATE}.csv")]
   FileUtils.rm(src_files)
   logger.info(action: 'remove', removed_files: src_files)
