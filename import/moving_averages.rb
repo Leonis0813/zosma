@@ -96,31 +96,31 @@ EOF
     end
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-    unless File.exists?(backup_file) or
-          File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
-      moving_averages = MovingAverage.where('DATE(`time`) = ?', date_string)
-      unless moving_averages.empty?
-        FileUtils.mkdir_p(BACKUP_DIR)
+    next if File.exists?(backup_file) or
+      File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
-        CSV.open(backup_file, 'w') do |csv|
-          moving_averages.each do |moving_average|
-            csv << [
-              moving_average.time.strftime('%F %T'),
-              moving_average.pair,
-              moving_average.time_frame,
-              moving_average.period,
-              moving_average.value,
-            ]
-          end
+    moving_averages = MovingAverage.where('DATE(`time`) = ?', date_string)
+    next if moving_averages.empty?
 
-          logger.info(
-            action: 'backup',
-            file: File.basename(backup_file),
-            lines: moving_averages.size,
-            size: File.stat(backup_file).size,
-          )
-        end
+    FileUtils.mkdir_p(BACKUP_DIR)
+
+    CSV.open(backup_file, 'w') do |csv|
+      moving_averages.each do |moving_average|
+        csv << [
+          moving_average.time.strftime('%F %T'),
+          moving_average.pair,
+          moving_average.time_frame,
+          moving_average.period,
+          moving_average.value,
+        ]
       end
+
+      logger.info(
+        action: 'backup',
+        file: File.basename(backup_file),
+        lines: moving_averages.size,
+        size: File.stat(backup_file).size,
+      )
     end
   end
 end

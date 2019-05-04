@@ -96,34 +96,34 @@ EOF
     end
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-    unless File.exists?(backup_file) or
-          File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
-      candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
-      unless candle_sticks.empty?
-        FileUtils.mkdir_p(BACKUP_DIR)
+    next if File.exists?(backup_file) or
+      File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
-        CSV.open(backup_file, 'w') do |csv|
-          candle_sticks.each do |candle_stick|
-            csv << [
-              candle_stick.from.strftime('%F %T'),
-              candle_stick.to.strftime('%F %T'),
-              candle_stick.pair,
-              candle_stick.time_frame,
-              candle_stick.open,
-              candle_stick.close,
-              candle_stick.high,
-              candle_stick.low,
-            ]
-          end
+    candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
+    next if  candle_sticks.empty?
 
-          logger.info(
-            action: 'backup',
-            file: File.basename(backup_file),
-            lines: candle_sticks.size,
-            size: File.stat(backup_file).size,
-          )
-        end
+    FileUtils.mkdir_p(BACKUP_DIR)
+
+    CSV.open(backup_file, 'w') do |csv|
+      candle_sticks.each do |candle_stick|
+        csv << [
+          candle_stick.from.strftime('%F %T'),
+          candle_stick.to.strftime('%F %T'),
+          candle_stick.pair,
+          candle_stick.time_frame,
+          candle_stick.open,
+          candle_stick.close,
+          candle_stick.high,
+          candle_stick.low,
+        ]
       end
+
+      logger.info(
+        action: 'backup',
+        file: File.basename(backup_file),
+        lines: candle_sticks.size,
+        size: File.stat(backup_file).size,
+      )
     end
   end
 end

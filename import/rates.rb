@@ -107,25 +107,25 @@ EOF
     end
 
     backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-    unless File.exists?(backup_file) or
-          File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
-      rates = Rate.where('DATE(`time`) = ?', date_string)
-      unless rates.empty?
-        FileUtils.mkdir_p(BACKUP_DIR)
+    next if File.exists?(backup_file) or
+      File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
-        CSV.open(backup_file, 'w') do |csv|
-          rates.each do |rate|
-            csv << [rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
-          end
+    rates = Rate.where('DATE(`time`) = ?', date_string)
+    next if rates.empty?
 
-          logger.info(
-            action: 'backup',
-            file: File.basename(backup_file),
-            lines: rates.size,
-            size: File.stat(backup_file).size,
-          )
-        end
+    FileUtils.mkdir_p(BACKUP_DIR)
+
+    CSV.open(backup_file, 'w') do |csv|
+      rates.each do |rate|
+        csv << [rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
       end
+
+      logger.info(
+        action: 'backup',
+        file: File.basename(backup_file),
+        lines: rates.size,
+        size: File.stat(backup_file).size,
+      )
     end
   end
 end
