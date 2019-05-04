@@ -76,11 +76,11 @@ Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |dir|
       variables = headers.map.with_index(1) {|header, i| "`#{header}`=@#{i}" }
       variables += %w[created_at=now() updated_at=now()]
 
-      sql = <<"EOF"
-LOAD DATA LOCAL INFILE '#{tmp_file_name}'
-  INTO TABLE #{MovingAverage.table_name}
-  FIELDS TERMINATED BY ',' (#{ids.join(',')}) SET #{variables.join(',')}
-EOF
+      sql = <<~"EOF"
+        LOAD DATA LOCAL INFILE '#{tmp_file_name}'
+        INTO TABLE #{MovingAverage.table_name}
+        FIELDS TERMINATED BY ',' (#{ids.join(',')}) SET #{variables.join(',')}
+      EOF
 
       moving_average_size = File.read(tmp_file_name).lines.size
       sql_start = Time.now
