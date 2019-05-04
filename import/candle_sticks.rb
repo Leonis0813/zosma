@@ -16,7 +16,7 @@ begin
   from = from ? Date.parse(from.match(/\A--from=(.*)\z/)[1]) : (Date.today - 2)
   to = ARGV.find {|arg| arg.start_with?('--to=') }
   to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : (Date.today - 2)
-rescue Exception => e
+rescue ArgumentError => e
   logger.error(e.backtrace.join("\n"))
   raise e
 end
