@@ -100,7 +100,7 @@ EOF
       File.exists?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
 
     candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
-    next if  candle_sticks.empty?
+    next if candle_sticks.empty?
 
     FileUtils.mkdir_p(BACKUP_DIR)
 
