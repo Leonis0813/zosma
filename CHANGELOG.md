@@ -1,3 +1,20 @@
+# 3.0.8 (2019/06/26)
+- [UPDATE] gems
+
+# 3.0.7 (2019/05/04)
+- [FIX] coding style
+- [UPDATE] gems
+
+# 3.0.6 (2019/05/02)
+- [UPDATE] ruby version to 2.4.4
+
+# 3.0.5 (2019/04/11)
+- [UPDATE] gems
+
+# 3.0.4 (2019/04/01)
+- [REFACTOR] logger
+- [UPDATE] script to remove moving averages
+
 # 3.0.3 (2019/03/28)
 - [FIX] mql scripts to get indicators per second
 - [ADD] pairs to collect
