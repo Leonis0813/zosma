@@ -10,7 +10,8 @@ require_relative '../lib/zosma_logger'
 require_relative '../models/rate'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.rate.backup_dir)
-LOGGER = ZosmaLogger.new(Settings.logger.path.import)
+logger = ZosmaLogger.new(Settings.logger.path.import)
+ImportUtil.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -18,7 +19,7 @@ begin
   to = ARGV.find {|arg| arg.start_with?('--to=') }
   to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : (Date.today - 2)
 rescue ArgumentError => e
-  LOGGER.error(e.backtrace.join("\n"))
+  logger.error(e.backtrace.join("\n"))
   raise e
 end
 
@@ -32,7 +33,7 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
       Archive::Tar::Minitar.unpack(file, dir)
     end
     FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    LOGGER.info(
+    logger.info(
       action: 'unpack',
       file: File.basename(tar_gz_file),
       size: File.stat(tar_gz_file).size,
@@ -43,7 +44,7 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
       Dir[File.join(Settings.import.file.rate.src_dir, "*_#{yearmonth}-*.csv")],
     ].each do |csv_files|
       FileUtils.cp(csv_files, dir)
-      LOGGER.info(
+      logger.info(
         action: 'copy',
         files: csv_files.map {|file| File.basename(file) },
       )
@@ -56,16 +57,16 @@ tmp_file_name = File.join(dir, 'rates.csv')
 (from..to).each do |date|
   date_string = date.strftime('%F')
 
-  target_files(dir, date_string).each do |file|
+  ImportUtil.target_files(dir, date_string).each do |file|
     CSV.open(tmp_file_name, 'w') do |csv|
       rates = CSV.read(file, converters: :all).map do |rate|
         [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
       end
-      LOGGER.info(action: 'read', file: File.basename(file), size: File.stat(file).size)
+      logger.info(action: 'read', file: File.basename(file), size: File.stat(file).size)
 
       before_size = rates.size
       rates.uniq! {|rate| [rate[0], rate[1]] }
-      LOGGER.info(action: 'unique', before_size: before_size, after_size: rates.size)
+      logger.info(action: 'unique', before_size: before_size, after_size: rates.size)
 
       rates.each {|rate| csv << rate }
     end
@@ -74,7 +75,7 @@ tmp_file_name = File.join(dir, 'rates.csv')
     ids = headers.size.times.map {|i| "@#{i + 1}" }
     variables = headers.map.with_index(1) {|header, i| "#{header}=@#{i}" }
     variables += %w[created_at=now() updated_at=now()]
-    load_data(tmp_file_name, ids, variables, Rate.table_name)
+    ImportUtil.load_data(tmp_file_name, ids, variables, Rate.table_name)
   end
 
   backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
@@ -91,7 +92,7 @@ tmp_file_name = File.join(dir, 'rates.csv')
       csv << [rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
     end
 
-    LOGGER.info(
+    logger.info(
       action: 'backup',
       file: File.basename(backup_file),
       lines: rates.size,
