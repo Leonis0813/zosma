@@ -45,8 +45,7 @@ namespace :db do
     settings = Settings.mysql.map {|key, value| [key.to_s, value] }.to_h
     ActiveRecord::Tasks::DatabaseTasks.database_configuration = settings
     ActiveRecord::Base.configurations = {ENV['RAILS_ENV'] => settings}
-    ActiveRecord::Base.logger = DenebolaLogger.new(Settings.logger.path.database)
-    ActiveRecord::Base.logger = ZosmaLogger.new('log/database.log')
+    ActiveRecord::Base.logger = ZosmaLogger.new(Settings.logger.path.database)
   end
 end
 
