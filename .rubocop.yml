@@ -1,5 +1,8 @@
+require: rubocop-performance
+
 AllCops:
   Exclude:
+    - 'db/schema.rb'
     - 'vendor/**/*'
 
 Layout/SpaceInsideBlockBraces:

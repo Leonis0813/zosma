@@ -6,8 +6,10 @@ mysql:
   password: '7QiSlC?4'
 
 logger:
+  level: 'debug'
   time_format: '%Y/%m/%d %H:%M:%S.%6N'
   path:
+    database: 'log/database.log'
     import: 'log/import.log'
     compress: 'log/compress.log'
     remove: 'log/remove.log'
