@@ -57,7 +57,7 @@ tmp_file_name = File.join(dir, 'rates.csv')
 (from..to).each do |date|
   date_string = date.strftime('%F')
 
-  target_files(dir, date_string).each do |file|
+  ImportUtil.target_files(dir, date_string).each do |file|
     CSV.open(tmp_file_name, 'w') do |csv|
       rates = CSV.read(file, converters: :all).map do |rate|
         [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
@@ -75,7 +75,7 @@ tmp_file_name = File.join(dir, 'rates.csv')
     ids = headers.size.times.map {|i| "@#{i + 1}" }
     variables = headers.map.with_index(1) {|header, i| "#{header}=@#{i}" }
     variables += %w[created_at=now() updated_at=now()]
-    load_data(tmp_file_name, ids, variables, Rate.table_name)
+    ImportUtil.load_data(tmp_file_name, ids, variables, Rate.table_name)
   end
 
   backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")

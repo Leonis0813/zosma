@@ -58,7 +58,7 @@ tmp_file_name = File.join(dir, 'moving_averages.csv')
 (from..to).each do |date|
   date_string = date.strftime('%F')
 
-  target_files(dir, date_string).each do |file|
+  ImportUtil.target_files(dir, date_string).each do |file|
     CSV.open(tmp_file_name, 'w') do |csv|
       moving_averages = CSV.read(file)
       logger.info(action: 'read', file: File.basename(file), size: File.stat(file).size)
@@ -69,7 +69,7 @@ tmp_file_name = File.join(dir, 'moving_averages.csv')
     ids = headers.size.times.map {|i| "@#{i + 1}" }
     variables = headers.map.with_index(1) {|header, i| "`#{header}`=@#{i}" }
     variables += %w[created_at=now() updated_at=now()]
-    load_data(tmp_file_name, ids, variables, MovingAverage.table_name)
+    ImportUtil.load_data(tmp_file_name, ids, variables, MovingAverage.table_name)
   end
 
   backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
