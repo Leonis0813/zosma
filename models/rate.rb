@@ -1,5 +1,5 @@
 class Rate < ActiveRecord::Base
-  PAIR_LIST = %w[AUDJPY CADJPY CHFJPY EURJPY EURUSD GBPJPY NZDJPY USDJPY]
+  PAIR_LIST = %w[AUDJPY CADJPY CHFJPY EURJPY EURUSD GBPJPY NZDJPY USDJPY].freeze
 
   validates :time, :pair, :bid, :ask,
             presence: {message: 'absent'}
