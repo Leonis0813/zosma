@@ -10,7 +10,8 @@ require_relative '../lib/zosma_logger'
 require_relative '../models/moving_average'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.moving_average.backup_dir)
-LOGGER = ZosmaLogger.new(Settings.logger.path.import)
+logger = ZosmaLogger.new(Settings.logger.path.import)
+ImportUtil.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -18,7 +19,7 @@ begin
   to = ARGV.find {|arg| arg.start_with?('--to=') }
   to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : (Date.today - 2)
 rescue ArgumentError => e
-  LOGGER.error(e.backtrace.join("\n"))
+  logger.error(e.backtrace.join("\n"))
   raise e
 end
 
@@ -32,7 +33,7 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
       Archive::Tar::Minitar.unpack(file, dir)
     end
     FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    LOGGER.info(
+    logger.info(
       action: 'unpack',
       file: File.basename(tar_gz_file),
       size: File.stat(tar_gz_file).size,
@@ -44,7 +45,7 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
       Dir[File.join(src_dir, "*_#{yearmonth}-*.csv")],
     ].each do |csv_files|
       FileUtils.cp(csv_files, dir)
-      LOGGER.info(
+      logger.info(
         action: 'copy',
         files: csv_files.map {|file| File.basename(file) },
       )
@@ -60,7 +61,7 @@ tmp_file_name = File.join(dir, 'moving_averages.csv')
   target_files(dir, date_string).each do |file|
     CSV.open(tmp_file_name, 'w') do |csv|
       moving_averages = CSV.read(file)
-      LOGGER.info(action: 'read', file: File.basename(file), size: File.stat(file).size)
+      logger.info(action: 'read', file: File.basename(file), size: File.stat(file).size)
       moving_averages.each {|moving_average| csv << moving_average }
     end
 
@@ -91,7 +92,7 @@ tmp_file_name = File.join(dir, 'moving_averages.csv')
       ]
     end
 
-    LOGGER.info(
+    logger.info(
       action: 'backup',
       file: File.basename(backup_file),
       lines: moving_averages.size,
