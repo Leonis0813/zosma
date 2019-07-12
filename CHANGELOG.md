@@ -1,3 +1,6 @@
+# 3.0.10 (2019/07/12)
+- [UPDATE] gems
+
 # 3.0.9 (2019/07/11)
 - [ADD] validation to models
 - [UPDATE] gems
