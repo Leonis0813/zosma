@@ -76,7 +76,7 @@ GEM
     mysql2 (0.5.2)
     octokit (4.14.0)
       sawyer (~> 0.8.0, >= 0.5.3)
-    parallel (1.19.0)
+    parallel (1.19.1)
     parser (2.6.5.0)
       ast (~> 2.4.0)
     powerbar (1.0.18)
