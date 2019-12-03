@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'activerecord'
+gem 'activerecord', '~> 5.0'
 gem 'config'
 gem 'minitar'
 gem 'minitar-cli'
