@@ -1,3 +1,6 @@
+# 3.0.12 (2019/12/12)
+- [UPDATE] gems
+
 # 3.0.11 (2019/12/02)
 - [UPDATE] ruby version to 2.6.3
 - [UPDATE] gems
