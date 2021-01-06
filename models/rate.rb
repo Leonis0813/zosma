@@ -1,4 +1,4 @@
-class Rate < ActiveRecord::Base
+class Rate < ApplicationRecord
   PAIR_LIST = %w[AUDJPY CADJPY CHFJPY EURJPY EURUSD GBPJPY NZDJPY USDJPY].freeze
 
   validates :time, :pair, :bid, :ask,

@@ -1,4 +1,4 @@
-class MovingAverage < ActiveRecord::Base
+class MovingAverage < ApplicationRecord
   PAIR_LIST = %w[AUDJPY CADJPY CHFJPY EURJPY EURUSD GBPJPY NZDJPY USDJPY].freeze
   TIME_FRAME_LIST = %w[M1 M5 M15 M30 H1 H4 D1 W1 MN1].freeze
   PERIOD_LIST = [25, 50, 75, 100, 150, 200].freeze
