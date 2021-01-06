@@ -7,17 +7,18 @@ require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/import_util'
 require_relative '../lib/zosma_logger'
+require_relative '../models/application_record'
 require_relative '../models/candle_stick'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.candle_stick.backup_dir)
 logger = ZosmaLogger.new(Settings.logger.path.import)
-ImportUtil.logger = logger
+ApplicationRecord.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
   from = from ? Date.parse(from.match(/\A--from=(.*)\z/)[1]) : (Date.today - 2)
   to = ARGV.find {|arg| arg.start_with?('--to=') }
-  to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : (Date.today - 2)
+  to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : Date.today
 rescue ArgumentError => e
   logger.error(e.backtrace.join("\n"))
   raise e
@@ -64,11 +65,7 @@ tmp_file_name = File.join(dir, 'candle_sticks.csv')
       candle_sticks.each {|candle_stick| csv << candle_stick }
     end
 
-    headers = CandleStick.attribute_names - %w[id created_at updated_at]
-    ids = headers.size.times.map {|i| "@#{i + 1}" }
-    variables = headers.map.with_index(1) {|header, i| "`#{header}`=@#{i}" }
-    variables += %w[created_at=now() updated_at=now()]
-    ImportUtil.load_data(tmp_file_name, ids, variables, CandleStick.table_name)
+    CandleStick.load_data(tmp_file_name)
   end
 
   backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
