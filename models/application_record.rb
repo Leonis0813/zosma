@@ -10,10 +10,10 @@ class ApplicationRecord < ActiveRecord::Base
     variables += %w[created_at=now() updated_at=now()]
 
     sql = <<-"SQL"
-  LOAD DATA LOCAL INFILE '#{file_name}'
-  IGNORE INTO TABLE #{self.table_name}
-  FIELDS TERMINATED BY ',' (#{ids.join(',')}) SET #{variables.join(',')}
-SQL
+LOAD DATA LOCAL INFILE '#{file_name}'
+IGNORE INTO TABLE #{self.table_name}
+FIELDS TERMINATED BY ',' (#{ids.join(',')}) SET #{variables.join(',')}
+    SQL
 
     file_line_size = File.read(file_name).lines.size
     sql_start = Time.now
