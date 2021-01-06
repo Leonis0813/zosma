@@ -1,4 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
+
   cattr_accessor :logger
 
   def self.load_data(file_name, ids, variables, table_name)
