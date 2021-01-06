@@ -1,3 +1,6 @@
+# 3.0.12 (2021/01/07)
+- [UPDATE] default value of to parameter
+
 # 3.0.11 (2019/12/02)
 - [UPDATE] ruby version to 2.6.3
 - [UPDATE] gems
