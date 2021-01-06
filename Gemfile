@@ -10,3 +10,4 @@ gem 'pronto-rubocop', require: false
 gem 'rake'
 gem 'rubocop'
 gem 'rubocop-performance'
+gem 'rugged', '~> 0.28.0'
