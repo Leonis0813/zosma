@@ -1,3 +1,6 @@
+# 3.0.13 (2021/01/13)
+- [UPDATE] gems
+
 # 3.0.12 (2021/01/07)
 - [UPDATE] default value of to parameter
 - [UPDATE] gems
