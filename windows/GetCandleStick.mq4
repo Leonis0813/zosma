@@ -23,11 +23,20 @@ void writeCandleStick(int index, int handle, datetime now) {
     double high = iHigh(NULL, time_frames[index], 1);
     double low = iLow(NULL, time_frames[index], 1);
 
-    string from = TimeToStr(now - time_frames[index] * 60, TIME_DATE | TIME_MINUTES);
-    string to = TimeToStr(now - 60, TIME_DATE | TIME_MINUTES);
+    string from = "";
+    string to = "";
+
+    if(TimeDayOfWeek(now) == 1 && 0 <= index && index <= 6 && TimeToStr(now, TIME_DATE) != TimeToStr(now - time_frames[index] * 60, TIME_DATE)) {
+        int twoDays = PERIOD_D1 * 2;
+        from = TimeToStr(now - time_frames[index] * 60 - twoDays, TIME_DATE | TIME_MINUTES);
+        to = TimeToStr(now - 60 - twoDays, TIME_DATE | TIME_MINUTES);
+    } else {
+        from = TimeToStr(now - time_frames[index] * 60, TIME_DATE | TIME_MINUTES);
+        to = TimeToStr(now - 60, TIME_DATE | TIME_MINUTES);
+    }
+
     StringReplace(from, ".", "-");
     StringReplace(to, ".", "-");
-
     FileSeek(handle, 0, SEEK_END);
     FileWrite(handle, from + ":00", to + ":59", Symbol(), time_frames_str[index], open, close, high, low);
     is_written[index] = true;
