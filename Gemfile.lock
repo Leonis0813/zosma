@@ -16,7 +16,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     arel (9.0.0)
     ast (2.4.1)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.8)
     config (2.2.3)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
