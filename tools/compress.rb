@@ -21,7 +21,7 @@ start_time = Time.now
     FileUtils.cp(Dir[File.join(export_dir, "#{TARGET_MONTH}-*.csv")], compressed_dir)
 
     gzip_file = File.join(export_dir, "#{TARGET_MONTH}.tar.gz")
-    ZipUtil.write(gzip_file, dir, Dir[File.join(TARGET_MONTH, '*')])
+    ZipUtil.write(gzip_file, dir, File.join(TARGET_MONTH, '*'))
 
     logger.info(
       action: 'compress',

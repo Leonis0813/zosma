@@ -10,8 +10,8 @@ class ZipUtil
 
     logger.info(
       action: 'unpack',
-      file: File.basename(old_tar_gz_file),
-      size: File.stat(old_tar_gz_file).size,
+      file: File.basename(tar_gz_file),
+      size: File.stat(tar_gz_file).size,
     )
   end
 
@@ -20,7 +20,7 @@ class ZipUtil
       out = Minitar::Output.new(gzip)
 
       Dir.chdir(base_dir)
-      src_files.sort.each do |file|
+      Dir[src_files].sort.each do |file|
         Minitar.pack_file(file, out)
         logger.info(
           action: 'pack',

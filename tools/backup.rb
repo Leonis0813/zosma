@@ -60,9 +60,10 @@ periods.each do |period|
       end
 
       new_tar_gz_file = File.join(dir, "#{yearmonth}.tar.gz")
-      ZipUtil.write(new_tar_gz_file, dir, Dir[File.join(yearmonth, '*.csv')])
+      ZipUtil.write(new_tar_gz_file, dir, File.join(yearmonth, '*.csv'))
       FileUtils.mv(new_tar_gz_file, old_tar_gz_file)
-      FileUtils.cp(Dir[File.join(dir, '*.csv')], backup_dir)
+      FileUtils.mv(Dir[File.join(dir, '*.csv')], backup_dir)
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*.csv')], backup_dir)
       FileUtils.rm_r(dir)
     else
       (period[:from]..period[:to]).each do |date|
