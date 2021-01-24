@@ -37,9 +37,9 @@ periods.each do |period|
   yearmonth = period[:from].strftime('%Y-%m')
 
   [
-#    ['rate', Rate],
+    ['rate', Rate],
     ['candle_stick', CandleStick],
-#    ['moving_average', MovingAverage],
+    ['moving_average', MovingAverage],
   ].each do |type, klass|
     backup_dir = File.join(APPLICATION_ROOT, Settings.import.file[type].backup_dir)
     old_tar_gz_file = File.join(backup_dir, "#{yearmonth}.tar.gz")
