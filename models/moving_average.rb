@@ -13,4 +13,10 @@ class MovingAverage < ApplicationRecord
             inclusion: {in: PERIOD_LIST, message: 'invalid'}
   validates :value,
             numericality: {greater_than: 0, message: 'invalid'}
+
+  scope :on, ->(date) { where('DATE(`time`) = ?', date.strftime('%F')) }
+
+  def to_csv
+    [time.strftime('%F %T'), pair, time_frame, period, value]
+  end
 end

@@ -10,4 +10,19 @@ class CandleStick < ApplicationRecord
             inclusion: {in: TIME_FRAME_LIST, message: 'invalid'}
   validates :open, :close, :high, :low,
             numericality: {greater_than: 0, message: 'invalid'}
+
+  scope :on, ->(date) { where('DATE(`to`) = ?', date.strftime('%F')) }
+
+  def to_csv
+    [
+      from.strftime('%F %T'),
+      to.strftime('%F %T'),
+      pair,
+      time_frame,
+      open,
+      close,
+      high,
+      low,
+    ]
+  end
 end

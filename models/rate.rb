@@ -7,4 +7,10 @@ class Rate < ApplicationRecord
             inclusion: {in: PAIR_LIST, message: 'invalid'}
   validates :bid, :ask,
             numericality: {greater_than: 0, message: 'invalid'}
+
+  scope :on, ->(date) { where('DATE(`time`) = ?', date.strftime('%F')) }
+
+  def to_csv
+    [time.strftime('%F %T'), pair, bid, ask]
+  end
 end

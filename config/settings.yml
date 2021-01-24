@@ -11,6 +11,7 @@ logger:
   path:
     database: 'log/database.log'
     import: 'log/import.log'
+    backup: 'log/backup.log'
     compress: 'log/compress.log'
     remove: 'log/remove.log'
 

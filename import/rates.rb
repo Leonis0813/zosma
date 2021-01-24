@@ -7,7 +7,6 @@ require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/import_util'
 require_relative '../lib/zosma_logger'
-require_relative '../models/application_record'
 require_relative '../models/rate'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.rate.backup_dir)
