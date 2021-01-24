@@ -9,26 +9,7 @@ require_relative '../lib/zosma_logger'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 logger = ZosmaLogger.new(Settings.logger.path.backup)
-
-def output(period, klass, output_dir)
-  (period[:from]..period[:to]).each do |date|
-    records = klass.on(date)
-
-    if records.exists?
-      new_csv_file = File.join(output_dir, "#{date.strftime('%F')}.csv")
-      CSV.open(new_csv_file, 'w') do |csv|
-        records.each {|record| csv << record.to_csv }
-
-        logger.info(
-          action: 'backup',
-          file: File.basename(new_csv_file),
-          lines: records.size,
-          size: File.stat(new_csv_file).size,
-        )
-      end
-    end
-  end
-end
+ApplicationRecord.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -56,9 +37,9 @@ periods.each do |period|
   yearmonth = period[:from].strftime('%Y-%m')
 
   [
-    ['rate', Rate],
+#    ['rate', Rate],
     ['candle_stick', CandleStick],
-    ['moving_average', MovingAverage],
+#    ['moving_average', MovingAverage],
   ].each do |type, klass|
     backup_dir = File.join(APPLICATION_ROOT, Settings.import.file[type].backup_dir)
     old_tar_gz_file = File.join(backup_dir, "#{yearmonth}.tar.gz")
@@ -78,7 +59,9 @@ periods.each do |period|
       FileUtils.rm_rf(File.join(dir, yearmonth))
       FileUtils.mkdir_p(File.join(dir, yearmonth))
 
-      output(period, klass, File.join(dir, yearmonth))
+      (period[:from]..period[:to]).each do |date|
+        klass.dump(File.join(dir, yearmonth, "#{date.strftime('%F')}.csv"), date)
+      end
 
       new_tar_gz_file = File.join(dir, "#{yearmonth}.tar.gz")
       Zlib::GzipWriter.open(new_tar_gz_file, Zlib::BEST_COMPRESSION) do |gzip|
@@ -102,7 +85,9 @@ periods.each do |period|
       FileUtils.cp(Dir[File.join(dir, '*.csv')], backup_dir)
       FileUtils.rm_r(dir)
     else
-      output(period, klass, backup_dir)
+      (period[:from]..period[:to]).each do |date|
+        klass.dump(File.join(backup_dir, "#{date.strftime('%F')}.csv"), date)
+      end
     end
   end
 end
