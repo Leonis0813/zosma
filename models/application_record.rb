@@ -24,19 +24,18 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.dump(file_name, date)
-    records = self.on(date)
+    records = on(date)
+    return unless records.exists?
 
-    if records.exists?
-      CSV.open(file_name, 'w') do |csv|
-        records.each {|record| csv << record.to_csv }
+    CSV.open(file_name, 'w') do |csv|
+      records.each {|record| csv << record.to_csv }
 
-        logger.info(
-          action: 'dump',
-          file: File.basename(file_name),
-          lines: records.size,
-          size: File.stat(file_name).size,
-        )
-      end
+      logger.info(
+        action: 'dump',
+        file: File.basename(file_name),
+        lines: records.size,
+        size: File.stat(file_name).size,
+      )
     end
   end
 end

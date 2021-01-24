@@ -29,15 +29,9 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
   tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
 
   if File.exist?(tar_gz_file)
-    Zlib::GzipReader.open(tar_gz_file) do |file|
-      Archive::Tar::Minitar.unpack(file, dir)
+    ZipUtil.read(tar_gz_file, dir) do
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
     end
-    FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    logger.info(
-      action: 'unpack',
-      file: File.basename(tar_gz_file),
-      size: File.stat(tar_gz_file).size,
-    )
   else
     [
       Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")],
