@@ -16,7 +16,7 @@
 const int time_frames[TIME_FRAME_SIZE] = {PERIOD_M1, PERIOD_M5, PERIOD_M15, PERIOD_M30, PERIOD_H1, PERIOD_H4, PERIOD_D1, PERIOD_W1, PERIOD_MN1};
 const string time_frames_str[TIME_FRAME_SIZE] = {"M1", "M5", "M15", "M30", "H1", "H4", "D1", "W1", "MN1"};
 const int periods[PERIOD_SIZE] = {25, 50, 75, 100, 150, 200};
-const int two_days = PERIOD_D1 * 2;
+const int two_days = PERIOD_D1 * 60 * 2;
 bool is_written[TIME_FRAME_SIZE];
 
 void writeMovingAverage(int index, int handle, datetime now) {
