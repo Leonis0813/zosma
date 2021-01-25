@@ -11,7 +11,11 @@ class CandleStick < ApplicationRecord
   validates :open, :close, :high, :low,
             numericality: {greater_than: 0, message: 'invalid'}
 
-  scope :on, ->(date) { where('DATE(`to`) = ?', date.strftime('%F')) }
+  scope :on, lambda{|date|
+    from = date.strftime('%F 00:00:00')
+    to = date.strftime('%F 23:59:59')
+    where('`to` BETWEEN ? AND ?', from, to)
+  }
 
   def to_csv
     [
