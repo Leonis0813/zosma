@@ -6,6 +6,7 @@ require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/import_util'
+require_relative '../lib/zip_util'
 require_relative '../lib/zosma_logger'
 require_relative '../models/application_record'
 require_relative '../models/moving_average'
@@ -13,6 +14,7 @@ require_relative '../models/moving_average'
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.moving_average.backup_dir)
 logger = ZosmaLogger.new(Settings.logger.path.import)
 ApplicationRecord.logger = logger
+ZipUtil.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -30,15 +32,9 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
   tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
 
   if File.exist?(tar_gz_file)
-    Zlib::GzipReader.open(tar_gz_file) do |file|
-      Archive::Tar::Minitar.unpack(file, dir)
+    ZipUtil.read(tar_gz_file, dir) do
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
     end
-    FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    logger.info(
-      action: 'unpack',
-      file: File.basename(tar_gz_file),
-      size: File.stat(tar_gz_file).size,
-    )
   else
     src_dir = Settings.import.file.moving_average.src_dir
     [
@@ -67,34 +63,6 @@ tmp_file_name = File.join(dir, 'moving_averages.csv')
     end
 
     MovingAverage.load_data(tmp_file_name)
-  end
-
-  backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-  next if File.exist?(backup_file) or
-          File.exist?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
-
-  moving_averages = MovingAverage.where('DATE(`time`) = ?', date_string)
-  next if moving_averages.empty?
-
-  FileUtils.mkdir_p(BACKUP_DIR)
-
-  CSV.open(backup_file, 'w') do |csv|
-    moving_averages.each do |moving_average|
-      csv << [
-        moving_average.time.strftime('%F %T'),
-        moving_average.pair,
-        moving_average.time_frame,
-        moving_average.period,
-        moving_average.value,
-      ]
-    end
-
-    logger.info(
-      action: 'backup',
-      file: File.basename(backup_file),
-      lines: moving_averages.size,
-      size: File.stat(backup_file).size,
-    )
   end
 end
 
