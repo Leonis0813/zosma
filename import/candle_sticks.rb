@@ -6,6 +6,7 @@ require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/import_util'
+require_relative '../lib/zip_util'
 require_relative '../lib/zosma_logger'
 require_relative '../models/application_record'
 require_relative '../models/candle_stick'
@@ -13,6 +14,7 @@ require_relative '../models/candle_stick'
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.candle_stick.backup_dir)
 logger = ZosmaLogger.new(Settings.logger.path.import)
 ApplicationRecord.logger = logger
+ZipUtil.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -30,15 +32,9 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
   tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
 
   if File.exist?(tar_gz_file)
-    Zlib::GzipReader.open(tar_gz_file) do |file|
-      Archive::Tar::Minitar.unpack(file, dir)
+    ZipUtil.read(tar_gz_file, dir) do
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
     end
-    FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    logger.info(
-      action: 'unpack',
-      file: File.basename(tar_gz_file),
-      size: File.stat(tar_gz_file).size,
-    )
   else
     [
       Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")],
@@ -66,37 +62,6 @@ tmp_file_name = File.join(dir, 'candle_sticks.csv')
     end
 
     CandleStick.load_data(tmp_file_name)
-  end
-
-  backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-  next if File.exist?(backup_file) or
-          File.exist?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
-
-  candle_sticks = CandleStick.where('DATE(`to`) = ?', date_string)
-  next if candle_sticks.empty?
-
-  FileUtils.mkdir_p(BACKUP_DIR)
-
-  CSV.open(backup_file, 'w') do |csv|
-    candle_sticks.each do |candle_stick|
-      csv << [
-        candle_stick.from.strftime('%F %T'),
-        candle_stick.to.strftime('%F %T'),
-        candle_stick.pair,
-        candle_stick.time_frame,
-        candle_stick.open,
-        candle_stick.close,
-        candle_stick.high,
-        candle_stick.low,
-      ]
-    end
-
-    logger.info(
-      action: 'backup',
-      file: File.basename(backup_file),
-      lines: candle_sticks.size,
-      size: File.stat(backup_file).size,
-    )
   end
 end
 

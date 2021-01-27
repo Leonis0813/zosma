@@ -22,4 +22,20 @@ class ApplicationRecord < ActiveRecord::Base
 
     connection.execute("ALTER TABLE #{table_name} AUTO_INCREMENT = #{last.id + 1}")
   end
+
+  def self.dump(file_name, date)
+    records = on(date)
+    return unless records.exists?
+
+    CSV.open(file_name, 'w') do |csv|
+      records.each {|record| csv << record.to_csv }
+
+      logger.info(
+        action: 'dump',
+        file: File.basename(file_name),
+        lines: records.size,
+        size: File.stat(file_name).size,
+      )
+    end
+  end
 end

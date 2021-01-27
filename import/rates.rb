@@ -7,7 +7,6 @@ require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/import_util'
 require_relative '../lib/zosma_logger'
-require_relative '../models/application_record'
 require_relative '../models/rate'
 
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.rate.backup_dir)
@@ -30,15 +29,9 @@ dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
   tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
 
   if File.exist?(tar_gz_file)
-    Zlib::GzipReader.open(tar_gz_file) do |file|
-      Archive::Tar::Minitar.unpack(file, dir)
+    ZipUtil.read(tar_gz_file, dir) do
+      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
     end
-    FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    logger.info(
-      action: 'unpack',
-      file: File.basename(tar_gz_file),
-      size: File.stat(tar_gz_file).size,
-    )
   else
     [
       Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")],
@@ -73,28 +66,6 @@ tmp_file_name = File.join(dir, 'rates.csv')
     end
 
     Rate.load_data(tmp_file_name)
-  end
-
-  backup_file = File.join(BACKUP_DIR, "#{date_string}.csv")
-  next if File.exist?(backup_file) or
-          File.exist?(File.join(BACKUP_DIR, "#{date.strftime('%Y-%m')}.tar.gz"))
-
-  rates = Rate.where('DATE(`time`) = ?', date_string)
-  next if rates.empty?
-
-  FileUtils.mkdir_p(BACKUP_DIR)
-
-  CSV.open(backup_file, 'w') do |csv|
-    rates.each do |rate|
-      csv << [rate.time.strftime('%F %T'), rate.pair, rate.bid, rate.ask]
-    end
-
-    logger.info(
-      action: 'backup',
-      file: File.basename(backup_file),
-      lines: rates.size,
-      size: File.stat(backup_file).size,
-    )
   end
 end
 

@@ -13,4 +13,14 @@ class MovingAverage < ApplicationRecord
             inclusion: {in: PERIOD_LIST, message: 'invalid'}
   validates :value,
             numericality: {greater_than: 0, message: 'invalid'}
+
+  scope :on, lambda {|date|
+    from = date.strftime('%F 00:00:00')
+    to = date.strftime('%F 23:59:59')
+    where('`time` BETWEEN ? AND ?', from, to)
+  }
+
+  def to_csv
+    [time.strftime('%F %T'), pair, time_frame, period, value]
+  end
 end

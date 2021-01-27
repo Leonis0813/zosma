@@ -1,5 +1,8 @@
-# 3.0.13 (2021/01/24)
+# 3.1.0 (2021/01/27)
+- [ADD] backup tool
+- [ADD] index to rates, candle_sticks, and moving_averages table
 - [UPDATE] gems
+- [FIX] datetime on Monday
 
 # 3.0.12 (2021/01/07)
 - [UPDATE] default value of to parameter
