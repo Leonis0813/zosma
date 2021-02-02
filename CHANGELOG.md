@@ -1,3 +1,6 @@
+# 3.1.2 (2021/02/02)
+- [FIX] import script for rates to set logger
+
 # 3.1.1 (2021/02/02)
 - [FIX] import script for rates
 

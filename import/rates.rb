@@ -13,6 +13,7 @@ require_relative '../models/rate'
 BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.rate.backup_dir)
 logger = ZosmaLogger.new(Settings.logger.path.import)
 ApplicationRecord.logger = logger
+ZipUtil.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
