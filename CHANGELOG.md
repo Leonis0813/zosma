@@ -1,3 +1,6 @@
+# 3.1.1 (2021/02/02)
+- [FIX] import script for rates
+
 # 3.1.0 (2021/01/27)
 - [ADD] backup tool
 - [ADD] index to rates, candle_sticks, and moving_averages table

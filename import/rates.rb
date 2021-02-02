@@ -6,6 +6,7 @@ require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/import_util'
+require_relative '../lib/zip_util'
 require_relative '../lib/zosma_logger'
 require_relative '../models/rate'
 
