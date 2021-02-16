@@ -2,7 +2,7 @@ require_relative '../config/initialize'
 require_relative '../db/connect'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
-logger = ZosmaLogger.new(Settings.logger.path.backup)
+logger = ZosmaLogger.new(Settings.logger.path.restore)
 ApplicationRecord.logger = logger
 ZipUtil.logger = logger
 
@@ -16,7 +16,9 @@ rescue ArgumentError => e
   raise e
 end
 
-logger.info("==== Start restore (from: #{from.strftime('%F')}, to: #{to.strftime('%F')})")
+logger.info("==== Start restore ====")
+logger.info("FROM: #{from.strftime('%F')}")
+logger.info("TO: #{to.strftime('%F')}")
 start_time = Time.now
 
 (from..to).each do |date|
@@ -30,4 +32,4 @@ start_time = Time.now
   end
 end
 
-logger.info("==== Finish restore (run_time: #{Time.now - start_time})")
+logger.info("==== Finish restore (run_time: #{Time.now - start_time}) ====")
