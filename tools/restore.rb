@@ -16,7 +16,7 @@ rescue ArgumentError => e
   raise e
 end
 
-logger.info("==== Start restore ====")
+logger.info('==== Start restore ====')
 logger.info("FROM: #{from.strftime('%F')}")
 logger.info("TO: #{to.strftime('%F')}")
 start_time = Time.now
