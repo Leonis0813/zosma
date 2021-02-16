@@ -1,12 +1,6 @@
-require 'csv'
-require 'fileutils'
-require 'minitar'
-require 'tmpdir'
-require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
 require_relative '../lib/zip_util'
-require_relative '../lib/zosma_logger'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 logger = ZosmaLogger.new(Settings.logger.path.backup)

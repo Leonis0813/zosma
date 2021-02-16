@@ -1,9 +1,5 @@
-require 'csv'
-require 'fileutils'
-require 'tmpdir'
 require_relative '../config/initialize'
 require_relative '../db/connect'
-require_relative '../lib/zosma_logger'
 require_relative '../models/moving_average'
 
 logger = ZosmaLogger.new(Settings.logger.path.import)
