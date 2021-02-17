@@ -27,7 +27,14 @@ start_time = Time.now
     ['moving_average', MovingAverage],
   ].each do |type, klass|
     backup_dir = File.join(APPLICATION_ROOT, Settings.import.file[type].backup_dir)
-    klass.load_data(File.join(backup_dir, "#{date.strftime('%F')}.csv"))
+    file_name = File.join(backup_dir, "#{date.strftime('%F')}.csv")
+
+    unless File.exist?(file_name)
+      logger.warn("#{file_name} is not exist")
+      next
+    end
+
+    klass.load_data(file_name)
   end
 end
 
