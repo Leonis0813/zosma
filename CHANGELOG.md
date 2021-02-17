@@ -1,3 +1,7 @@
+# 3.2.0 (2021/02/17)
+- [ADD] restore tool
+- [FIX] logger of application record
+
 # 3.1.2 (2021/02/02)
 - [FIX] import script for rates to set logger
 
