@@ -3,7 +3,7 @@ require_relative '../db/connect'
 require_relative '../models/rate'
 
 logger = ZosmaLogger.new(Settings.logger.path.import)
-ApplicationRecord.logger = logger
+ApplicationRecord.zosma_logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
