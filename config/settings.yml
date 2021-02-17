@@ -12,6 +12,7 @@ logger:
     database: 'log/database.log'
     import: 'log/import.log'
     backup: 'log/backup.log'
+    restore: 'log/restore.log'
     compress: 'log/compress.log'
     remove: 'log/remove.log'
 

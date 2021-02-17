@@ -1,5 +1,13 @@
-# 3.1.1 (2021/02/17)
+# 3.2.0 (2021/02/17)
+- [ADD] restore tool
+- [FIX] logger of application record
 - [UPDATE] gems
+
+# 3.1.2 (2021/02/02)
+- [FIX] import script for rates to set logger
+
+# 3.1.1 (2021/02/02)
+- [FIX] import script for rates
 
 # 3.1.0 (2021/01/27)
 - [ADD] backup tool

@@ -1,7 +1,7 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  cattr_accessor :logger
+  cattr_accessor :zosma_logger
 
   def self.load_data(file_name)
     headers = attribute_names - %w[id created_at updated_at]
@@ -18,7 +18,8 @@ class ApplicationRecord < ActiveRecord::Base
     file_line_size = File.read(file_name).lines.size
     sql_start = Time.now
     connection.execute(sql)
-    logger.info(action: 'load', line: file_line_size, runtime: Time.now - sql_start)
+    runtime = Time.now - sql_start
+    zosma_logger.info(action: 'load', line: file_line_size, runtime: runtime)
 
     connection.execute("ALTER TABLE #{table_name} AUTO_INCREMENT = #{last.id + 1}")
   end
@@ -30,7 +31,7 @@ class ApplicationRecord < ActiveRecord::Base
     CSV.open(file_name, 'w') do |csv|
       records.each {|record| csv << record.to_csv }
 
-      logger.info(
+      zosma_logger.info(
         action: 'dump',
         file: File.basename(file_name),
         lines: records.size,
