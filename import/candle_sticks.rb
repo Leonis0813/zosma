@@ -1,20 +1,9 @@
-require 'csv'
-require 'fileutils'
-require 'minitar'
-require 'tmpdir'
-require 'zlib'
 require_relative '../config/initialize'
 require_relative '../db/connect'
-require_relative '../lib/import_util'
-require_relative '../lib/zip_util'
-require_relative '../lib/zosma_logger'
-require_relative '../models/application_record'
 require_relative '../models/candle_stick'
 
-BACKUP_DIR = File.join(APPLICATION_ROOT, Settings.import.file.candle_stick.backup_dir)
 logger = ZosmaLogger.new(Settings.logger.path.import)
-ApplicationRecord.logger = logger
-ZipUtil.logger = logger
+ApplicationRecord.zosma_logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -26,43 +15,20 @@ rescue ArgumentError => e
   raise e
 end
 
-dir = Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir))
-
-(from.strftime('%Y-%m')..to.strftime('%Y-%m')).each do |yearmonth|
-  tar_gz_file = File.join(BACKUP_DIR, "#{yearmonth}.tar.gz")
-
-  if File.exist?(tar_gz_file)
-    ZipUtil.read(tar_gz_file, dir) do
-      FileUtils.mv(Dir[File.join(dir, yearmonth, '*')], dir)
-    end
-  else
-    [
-      Dir[File.join(BACKUP_DIR, "#{yearmonth}-*.csv")],
-      Dir[File.join(Settings.import.file.candle_stick.src_dir, "*_#{yearmonth}-*.csv")],
-    ].each do |csv_files|
-      FileUtils.cp(csv_files, dir)
-      logger.info(
-        action: 'copy',
-        files: csv_files.map {|file| File.basename(file) },
-      )
-    end
-  end
-end
-
-tmp_file_name = File.join(dir, 'candle_sticks.csv')
-
 (from..to).each do |date|
-  date_string = date.strftime('%F')
+  Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |tmp_dir|
+    tmp_file_name = File.join(tmp_dir, 'candle_sticks.csv')
 
-  ImportUtil.target_files(dir, date_string).each do |file|
-    CSV.open(tmp_file_name, 'w') do |csv|
-      candle_sticks = CSV.read(file)
-      logger.info(action: 'read', file: File.basename(file), size: File.stat(file).size)
-      candle_sticks.each {|candle_stick| csv << candle_stick }
+    file_pattern = "*_#{date.strftime('%F')}.csv"
+    target_files =
+      Dir[File.join(Settings.import.file.candle_stick.src_dir, file_pattern)]
+    FileUtils.cp(target_files, tmp_dir)
+    target_files = Dir[File.join(tmp_dir, file_pattern)]
+
+    target_files.each do |file|
+      logger.info(action: 'read', file: file, size: File.stat(file).size)
+      FileUtils.cp(file, tmp_file_name)
+      CandleStick.load_data(tmp_file_name)
     end
-
-    CandleStick.load_data(tmp_file_name)
   end
 end
-
-FileUtils.rm_r(dir)

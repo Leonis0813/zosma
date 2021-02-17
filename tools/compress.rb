@@ -1,10 +1,5 @@
-require 'fileutils'
-require 'minitar'
-require 'tmpdir'
-require 'zlib'
 require_relative '../config/initialize'
 require_relative '../lib/zip_util'
-require_relative '../lib/zosma_logger'
 
 TARGET_MONTH = (Date.today << 1).strftime('%Y-%m')
 logger = ZosmaLogger.new(Settings.logger.path.compress)

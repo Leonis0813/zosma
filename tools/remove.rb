@@ -1,8 +1,5 @@
-require 'csv'
-require 'fileutils'
 require_relative '../config/initialize'
 require_relative '../db/connect'
-require_relative '../lib/zosma_logger'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 TARGET_DATE = (Date.today - 2).strftime('%F')
