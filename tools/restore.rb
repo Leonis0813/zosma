@@ -4,7 +4,6 @@ Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 logger = ZosmaLogger.new(Settings.logger.path.restore)
 ApplicationRecord.logger = logger
-ZipUtil.logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
