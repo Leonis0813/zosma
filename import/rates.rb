@@ -7,7 +7,7 @@ ApplicationRecord.zosma_logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
-  from = from ? Date.parse(from.match(/\A--from=(.*)\z/)[1]) : (Date.today - 2)
+  from = from ? Date.parse(from.match(/\A--from=(.*)\z/)[1]) : (Date.today - 7)
   to = ARGV.find {|arg| arg.start_with?('--to=') }
   to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : Date.today
 rescue ArgumentError => e
