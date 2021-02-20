@@ -22,9 +22,8 @@ end
     file_pattern = "*_#{date.strftime('%F')}.csv"
     target_files = Dir[File.join(Settings.import.file.rate.src_dir, file_pattern)]
     FileUtils.cp(target_files, tmp_dir)
-    target_files = Dir[File.join(tmp_dir, file_pattern)]
 
-    target_files.each do |file|
+    Dir[File.join(tmp_dir, file_pattern)].each do |file|
       CSV.open(tmp_file_name, 'w') do |csv|
         rates = CSV.read(file, converters: :all).map do |rate|
           [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
