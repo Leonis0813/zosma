@@ -7,7 +7,7 @@ ApplicationRecord.zosma_logger = logger
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
-  from = from ? Date.parse(from.match(/\A--from=(.*)\z/)[1]) : (Date.today - 2)
+  from = from ? Date.parse(from.match(/\A--from=(.*)\z/)[1]) : (Date.today - 7)
   to = ARGV.find {|arg| arg.start_with?('--to=') }
   to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : Date.today
 rescue ArgumentError => e
@@ -23,9 +23,8 @@ end
     target_files =
       Dir[File.join(Settings.import.file.moving_average.src_dir, file_pattern)]
     FileUtils.cp(target_files, tmp_dir)
-    target_files = Dir[File.join(tmp_dir, file_pattern)]
 
-    target_files.each do |file|
+    Dir[File.join(tmp_dir, file_pattern)].each do |file|
       logger.info(action: 'read', file: file, size: File.stat(file).size)
       FileUtils.cp(file, tmp_file_name)
       MovingAverage.load_data(tmp_file_name)

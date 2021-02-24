@@ -1,3 +1,6 @@
+# 3.2.1 (2021/02/24)
+- [FIX] default value of from parameter
+
 # 3.2.0 (2021/02/17)
 - [ADD] restore tool
 - [FIX] logger of application record
