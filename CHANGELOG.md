@@ -1,5 +1,9 @@
-# 3.2.1 (2021/03/02)
+# 3.2.2 (2021/03/03)
+- [UPDATE] ruby version to 2.7.2
 - [UPDATE] gems
+
+# 3.2.1 (2021/02/24)
+- [FIX] default value of from parameter
 
 # 3.2.0 (2021/02/17)
 - [ADD] restore tool
