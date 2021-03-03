@@ -1,4 +1,4 @@
-# 3.2.2 (2021/03/03)
+# 3.2.2 (2021/03/04)
 - [UPDATE] ruby version to 2.7.2
 - [UPDATE] gems
 
