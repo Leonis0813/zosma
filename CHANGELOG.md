@@ -1,3 +1,6 @@
+# 3.2.2 (2021/03/03)
+- [UPDATE] ruby version to 2.7.2
+
 # 3.2.1 (2021/02/24)
 - [FIX] default value of from parameter
 
