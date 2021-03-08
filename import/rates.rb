@@ -4,7 +4,7 @@ require_relative '../models/rate'
 
 logger = ZosmaLogger.new(Settings.logger.path.import)
 
-logger.info('======== Start Import ========')
+logger.info('============ Start Import ============')
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -25,7 +25,7 @@ logger.info("  to: #{to}")
     tmp_file_name = File.join(tmp_dir, 'rates.csv')
 
     file_pattern = "*_#{date.strftime('%F')}.csv"
-    logger.info("==== Import #{file_pattern}")
+    logger.info("======== Import #{file_pattern}")
 
     target_files = Dir[File.join(Settings.import.file.rate.src_dir, file_pattern)]
     logger.info("Target Files: #{target_files}")
@@ -33,7 +33,7 @@ logger.info("  to: #{to}")
     FileUtils.cp(target_files, tmp_dir)
 
     Dir[File.join(tmp_dir, file_pattern)].each do |file|
-      logger.info("== Import #{file}")
+      logger.info("==== Import #{file}")
 
       CSV.open(tmp_file_name, 'w') do |csv|
         rates = CSV.read(file, converters: :all).map do |rate|
@@ -49,9 +49,12 @@ logger.info("  to: #{to}")
 
       count_before = Rate.count
       Rate.load_data(tmp_file_name)
-      logger.info("Load #{Rate.count - count_before} rates to table')
+      logger.info("Load #{Rate.count - count_before} rates to table")
     end
+
+    logger.info('====')
   end
 end
+logger.info('========')
 
-logger.info('======== Finish Import ========')
+logger.info('============ Finish Import ============')
