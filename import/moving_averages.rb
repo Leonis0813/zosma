@@ -3,7 +3,8 @@ require_relative '../db/connect'
 require_relative '../models/moving_average'
 
 logger = ZosmaLogger.new(Settings.logger.path.import)
-ApplicationRecord.zosma_logger = logger
+
+logger.info('======== Start Import ========')
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -15,19 +16,32 @@ rescue ArgumentError => e
   raise e
 end
 
+logger.info('Parameter:')
+logger.info("  from: #{from}")
+logger.info("  to: #{to}")
+
 (from..to).each do |date|
   Dir.mktmpdir(nil, File.join(APPLICATION_ROOT, Settings.import.tmp_dir)) do |tmp_dir|
     tmp_file_name = File.join(tmp_dir, 'moving_averages.csv')
 
     file_pattern = "*_#{date.strftime('%F')}.csv"
+    logger.info("==== Import #{file_pattern}")
+
     target_files =
       Dir[File.join(Settings.import.file.moving_average.src_dir, file_pattern)]
+    logger.info("Target Files: #{target_files}")
+
     FileUtils.cp(target_files, tmp_dir)
 
     Dir[File.join(tmp_dir, file_pattern)].each do |file|
-      logger.info(action: 'read', file: file, size: File.stat(file).size)
+      logger.info("== Import #{file}")
+
       FileUtils.cp(file, tmp_file_name)
+      logger.info("Copy #{file} to #{tmp_file_name} (#{File.stat(file).size} bytes)")
+
+      count_before = MovingAverage.count
       MovingAverage.load_data(tmp_file_name)
+      logger.info("Load #{MovingAverage.count - count_before} moving averages to table")
     end
   end
 end
