@@ -3,7 +3,6 @@ require_relative '../lib/zip_util'
 
 TARGET_MONTH = (Date.today << 1).strftime('%Y-%m')
 logger = ZosmaLogger.new(Settings.logger.path.compress)
-ZipUtil.logger = logger
 
 logger.info('======== Start Compress ========')
 logger.info("Month: #{TARGET_MONTH}")

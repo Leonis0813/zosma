@@ -4,8 +4,6 @@ require_relative '../lib/zip_util'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 logger = ZosmaLogger.new(Settings.logger.path.backup)
-ApplicationRecord.zosma_logger = logger
-ZipUtil.logger = logger
 
 logger.info('================ Start Backup ================')
 
