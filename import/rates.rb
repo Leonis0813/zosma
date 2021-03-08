@@ -3,7 +3,6 @@ require_relative '../db/connect'
 require_relative '../models/rate'
 
 logger = ZosmaLogger.new(Settings.logger.path.import)
-ApplicationRecord.zosma_logger = logger
 
 logger.info('======== Start Import ========')
 
@@ -48,8 +47,9 @@ logger.info("  to: #{to}")
         logger.info("Write #{rates.size} lines to #{tmp_file_name}")
       end
 
+      count_before = Rate.count
       Rate.load_data(tmp_file_name)
-      logger.info('Load Data to rates table')
+      logger.info("Load #{Rate.count - count_before} rates to table')
     end
   end
 end
