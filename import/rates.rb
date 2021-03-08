@@ -55,6 +55,6 @@ logger.info("  to: #{to}")
     logger.info('====')
   end
 end
-logger.info('========')
 
+logger.info('========')
 logger.info('============ Finish Import ============')

@@ -23,8 +23,6 @@ logger.info('Parameter:')
 logger.info("  from: #{from}")
 logger.info("  to: #{to}")
 
-start_time = Time.now
-
 logger.info('============ Calculate Target Period')
 
 periods = []
@@ -104,6 +102,6 @@ periods.each do |period|
 
   logger.info('========')
 end
-logger.info('============')
 
+logger.info('============')
 logger.info('================ Finish Backup ================')

@@ -3,7 +3,8 @@ require_relative '../db/connect'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 logger = ZosmaLogger.new(Settings.logger.path.restore)
-ApplicationRecord.zosma_logger = logger
+
+logger.info('============ Start Restore ============')
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -15,17 +16,20 @@ rescue ArgumentError => e
   raise e
 end
 
-logger.info('==== Start restore ====')
-logger.info("FROM: #{from.strftime('%F')}")
-logger.info("TO: #{to.strftime('%F')}")
-start_time = Time.now
+logger.info('Parameter')
+logger.info("  from: #{from}")
+logger.info("  to: #{to}")
 
 (from..to).each do |date|
+  logger.info("======== Restore data on #{date}")
+
   [
     ['rate', Rate],
     ['candle_stick', CandleStick],
     ['moving_average', MovingAverage],
   ].each do |type, klass|
+    logger.info("==== Restore #{type}")
+
     backup_dir = File.join(APPLICATION_ROOT, Settings.import.file[type].backup_dir)
     file_name = File.join(backup_dir, "#{date.strftime('%F')}.csv")
 
@@ -34,8 +38,13 @@ start_time = Time.now
       next
     end
 
+    count_before = klass.count
     klass.load_data(file_name)
+    logger.info("Load #{klass.count - count_before} records")
   end
+
+  logger.info('====')
 end
 
-logger.info("==== Finish restore (run_time: #{Time.now - start_time}) ====")
+logger.info('========')
+logger.info('============ Finish Restore ============')

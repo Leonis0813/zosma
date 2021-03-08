@@ -26,4 +26,5 @@ logger.info("Month: #{TARGET_MONTH}")
   end
 end
 
+logger.info('====')
 logger.info('======== Finish Compress ========')

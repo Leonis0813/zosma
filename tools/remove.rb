@@ -33,6 +33,6 @@ logger.info("Date: #{TARGET_DATE}")
   FileUtils.rm(src_files)
   logger.info("Remove files: #{src_files}")
 end
-logger.info('====')
 
+logger.info('====')
 logger.info('======== Finish Remove ========')
