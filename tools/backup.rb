@@ -88,6 +88,7 @@ periods.each do |period|
 
         file_path = File.join(backup_dir, "#{date.strftime('%F')}.csv")
         klass.dump(file_path, date)
+        next unless File.exist?(file_path)
 
         lines = File.read(file_path).lines.size
         bytes = File.stat(file_path).size
