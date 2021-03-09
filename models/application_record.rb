@@ -23,13 +23,6 @@ class ApplicationRecord < ActiveRecord::Base
 
     CSV.open(file_name, 'w') do |csv|
       records.each {|record| csv << record.to_csv }
-
-      zosma_logger.info(
-        action: 'dump',
-        file: File.basename(file_name),
-        lines: records.size,
-        size: File.stat(file_name).size,
-      )
     end
   end
 end
