@@ -39,9 +39,10 @@ logger.info("  to: #{to}")
       FileUtils.cp(file, tmp_file_name)
       logger.info("Copy #{file} to #{tmp_file_name} (#{File.stat(file).size} bytes)")
 
-      count_before = MovingAverage.count
+      last_id_before = MovingAverage.select(:id).order(id: :desc).limit(1)
       MovingAverage.load_data(tmp_file_name)
-      logger.info("Load #{MovingAverage.count - count_before} moving averages to table")
+      last_id_after = MovingAverage.select(:id).order(id: :desc).limit(1)
+      logger.info("Load #{last_id_after - last_id_before} moving averages to table")
     end
 
     logger.info('====')

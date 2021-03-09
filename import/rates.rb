@@ -47,9 +47,10 @@ logger.info("  to: #{to}")
         logger.info("Write #{rates.size} lines to #{tmp_file_name}")
       end
 
-      count_before = Rate.count
+      last_id_before = Rate.select(:id).order(id: :desc).limit(1)
       Rate.load_data(tmp_file_name)
-      logger.info("Load #{Rate.count - count_before} rates to table")
+      last_id_after = Rate.select(:id).order(id: :desc).limit(1)
+      logger.info("Load #{last_id_after - last_id_before} rates to table")
     end
 
     logger.info('====')

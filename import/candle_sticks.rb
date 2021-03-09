@@ -39,9 +39,10 @@ logger.info("  to: #{to}")
       FileUtils.cp(file, tmp_file_name)
       logger.info("Copy #{file} to #{tmp_file_name} (#{File.stat(file).size} bytes)")
 
-      count_before = CandleStick.count
+      last_id_before = CandleStick.select(:id).order(id: :desc).limit(1)
       CandleStick.load_data(tmp_file_name)
-      logger.info("Load #{CandleStick.count - count_before} candle sticks to table")
+      last_id_after = CandleStick.select(:id).order(id: :desc).limit(1)
+      logger.info("Load #{last_id_after - last_id_before} candle sticks to table")
     end
 
     logger.info('====')
