@@ -4,8 +4,8 @@ require_relative '../lib/zip_util'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
 logger = ZosmaLogger.new(Settings.logger.path.backup)
-ApplicationRecord.zosma_logger = logger
-ZipUtil.logger = logger
+
+logger.info('================ Start Backup ================')
 
 begin
   from = ARGV.find {|arg| arg.start_with?('--from=') }
@@ -17,8 +17,11 @@ rescue ArgumentError => e
   raise e
 end
 
-logger.info("==== Start backup (from: #{from.strftime('%F')}, to: #{to.strftime('%F')})")
-start_time = Time.now
+logger.info('Parameter:')
+logger.info("  from: #{from}")
+logger.info("  to: #{to}")
+
+logger.info('============ Calculate Target Period')
 
 periods = []
 (from..to).each do |date|
@@ -29,7 +32,13 @@ periods = []
 end
 periods.last[:to] = to
 
+periods.each.with_index(1) do |period, i|
+  logger.info("#{i}. #{period[:from]} - #{period[:to]}")
+end
+
 periods.each do |period|
+  logger.info("============ Backup #{period[:from]} - #{period[:to]}")
+
   yearmonth = period[:from].strftime('%Y-%m')
 
   [
@@ -37,6 +46,8 @@ periods.each do |period|
     ['candle_stick', CandleStick],
     ['moving_average', MovingAverage],
   ].each do |type, klass|
+    logger.info("======== Backup #{klass.table_name} table")
+
     backup_dir = File.join(APPLICATION_ROOT, Settings.import.file[type].backup_dir)
     old_tar_gz_file = File.join(backup_dir, "#{yearmonth}.tar.gz")
 
@@ -48,23 +59,48 @@ periods.each do |period|
         FileUtils.rm_rf(File.join(dir, yearmonth))
         FileUtils.mkdir_p(File.join(dir, yearmonth))
       end
+      logger.info("Unzip #{old_tar_gz_file} to #{dir}")
 
       (period[:from]..period[:to]).each do |date|
-        klass.dump(File.join(dir, yearmonth, "#{date.strftime('%F')}.csv"), date)
+        logger.info("==== Backup Data on #{date}")
+
+        file_path = File.join(dir, yearmonth, "#{date.strftime('%F')}.csv")
+        klass.dump(file_path, date)
+
+        lines = File.read(file_path).lines.size
+        bytes = File.stat(file_path).size
+        logger.info("Dump to #{file_path} (#{lines} lines, #{bytes} bytes)")
       end
+
+      logger.info('====')
 
       new_tar_gz_file = File.join(dir, "#{yearmonth}.tar.gz")
       ZipUtil.write(new_tar_gz_file, dir, File.join(yearmonth, '*.csv'))
+      logger.info("Zip #{File.join(dir, yearmonth, '*.csv')}")
+
       FileUtils.mv(new_tar_gz_file, old_tar_gz_file)
       FileUtils.mv(Dir[File.join(dir, '*.csv')], backup_dir)
       FileUtils.mv(Dir[File.join(dir, yearmonth, '*.csv')], backup_dir)
       FileUtils.rm_r(dir)
     else
       (period[:from]..period[:to]).each do |date|
-        klass.dump(File.join(backup_dir, "#{date.strftime('%F')}.csv"), date)
+        logger.info("==== Backup Data on #{date}")
+
+        file_path = File.join(backup_dir, "#{date.strftime('%F')}.csv")
+        klass.dump(file_path, date)
+        next unless File.exist?(file_path)
+
+        lines = File.read(file_path).lines.size
+        bytes = File.stat(file_path).size
+        logger.info("Dump to #{file_path} (#{lines} lines, #{bytes} bytes)")
       end
+
+      logger.info('====')
     end
   end
+
+  logger.info('========')
 end
 
-logger.info("==== Finish backup (run_time: #{Time.now - start_time})")
+logger.info('============')
+logger.info('================ Finish Backup ================')
