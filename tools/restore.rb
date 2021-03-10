@@ -38,9 +38,10 @@ logger.info("  to: #{to}")
       next
     end
 
-    count_before = klass.count
+    last_id_before = klass.select(:id).order(desc: :id).limit(1).first.id
     klass.load_data(file_name)
-    logger.info("Load #{klass.count - count_before} records")
+    last_id_after = klass.select(:id).order(desc: :id).limit(1).first.id
+    logger.info("Load #{last_id_after - last_id_before} records")
   end
 
   logger.info('====')
