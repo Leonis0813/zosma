@@ -25,7 +25,7 @@ end
 logger.info('Parameter:')
 logger.info("  from: #{from}")
 logger.info("  to: #{to}")
-logger.info("  data_type: #{data_type}")
+logger.info("  data_types: #{data_types}")
 
 (from..to).each do |date|
   logger.info("============ Import #{date} data")
