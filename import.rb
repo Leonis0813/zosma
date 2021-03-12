@@ -2,7 +2,7 @@ require_relative '../config/initialize'
 require_relative '../db/connect'
 Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
 
-ALL_DATA_TYPES = %w[rate candle_stick moving_average]
+ALL_DATA_TYPES = %w[rate candle_stick moving_average].freeze
 
 logger = ZosmaLogger.new(Settings.logger.path.import)
 
