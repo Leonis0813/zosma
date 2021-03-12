@@ -30,4 +30,4 @@ import:
     moving_average:
       src_dir: '/mnt/smb/moving_averages'
       backup_dir: 'backup/moving_averages'
-      tmp_file: 'moving_average.csv'
+      tmp_file: 'moving_averages.csv'
