@@ -20,6 +20,10 @@ class MovingAverage < ApplicationRecord
     where('`time` BETWEEN ? AND ?', from, to)
   }
 
+  def create_infile(src_file, dst_file)
+    FileUtils.cp(src_file, dst_file)
+  end
+
   def to_csv
     [time.strftime('%F %T'), pair, time_frame, period, value]
   end

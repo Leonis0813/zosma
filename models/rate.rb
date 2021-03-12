@@ -14,6 +14,17 @@ class Rate < ApplicationRecord
     where('`time` BETWEEN ? AND ?', from, to)
   }
 
+  def create_infile(src_file, dst_file)
+    CSV.open(dst_name, 'w') do |csv|
+      rates = CSV.read(src_file, converters: :all).map do |rate|
+        [rate[0].strftime('%F %T'), rate[1], rate[2], rate[3]]
+      end
+
+      rates.uniq! {|rate| [rate[0], rate[1]] }
+      rates.each {|rate| csv << rate }
+    end
+  end
+
   def to_csv
     [time.strftime('%F %T'), pair, bid, ask]
   end
