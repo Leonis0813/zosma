@@ -44,8 +44,9 @@ logger.info("  data_types: #{data_types}")
       logger.info("Target Files: #{target_files}")
 
       FileUtils.cp(target_files, tmp_dir)
+      target_files = Dir[File.join(tmp_dir, file_pattern)]
 
-      Dir[File.join(tmp_dir, file_pattern)].each do |file|
+      target_files.each do |file|
         logger.info("==== Import #{file}")
 
         klass.create_infile(file, tmp_file_name)
@@ -59,7 +60,7 @@ logger.info("  data_types: #{data_types}")
         logger.info("Load #{last_id_after - last_id_before} rates to table")
       end
 
-      logger.info('====')
+      logger.info('====') unless target_files.empty?
     end
   end
 
