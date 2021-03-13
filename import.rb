@@ -1,6 +1,6 @@
-require_relative '../config/initialize'
-require_relative '../db/connect'
-Dir[File.join(APPLICATION_ROOT, 'models/*')].each {|f| require_relative f }
+require_relative 'config/initialize'
+require_relative 'db/connect'
+Dir['models/*'].each {|f| require_relative f }
 
 ALL_DATA_TYPES = %w[rate candle_stick moving_average].freeze
 
@@ -14,8 +14,8 @@ begin
   to = ARGV.find {|arg| arg.start_with?('--to=') }
   to = to ? Date.parse(to.match(/\A--to=(.*)\z/)[1]) : Date.today
   data_types = ARGV.find {|arg| arg.start_with?('--data-types') }
-  data_types = data_types.match(/\A--data_types=(.*)\z/)[1].split(',') if data_types
-  data_types ||= ALL_DATA_TYPES
+  data_types = data_types&.match(/\A--data-types=(.*)\z/)
+  data_types = data_types ? data_types[1].split(',') : ALL_DATA_TYPES
   raise ArgumentError unless (data_types - ALL_DATA_TYPES).empty?
 rescue ArgumentError => e
   logger.error(e.backtrace.join("\n"))
