@@ -1,3 +1,6 @@
+# 3.3.0 (2021/03/15)
+- [UPDATE] import scripts to add data_types parameter
+
 # 3.2.3 (2021/03/10)
 - [UPDATE] scripts to improve logging
 

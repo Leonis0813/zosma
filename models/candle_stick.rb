@@ -17,6 +17,10 @@ class CandleStick < ApplicationRecord
     where('`to` BETWEEN ? AND ?', from, to)
   }
 
+  def self.create_infile(src_file, dst_file)
+    FileUtils.cp(src_file, dst_file)
+  end
+
   def to_csv
     [
       from.strftime('%F %T'),

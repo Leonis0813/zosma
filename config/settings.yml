@@ -22,9 +22,12 @@ import:
     rate:
       src_dir: '/mnt/smb/rates'
       backup_dir: 'backup/rates'
+      tmp_file: 'rates.csv'
     candle_stick:
       src_dir: '/mnt/smb/candle_sticks'
       backup_dir: 'backup/candle_sticks'
+      tmp_file: 'candle_sticks.csv'
     moving_average:
       src_dir: '/mnt/smb/moving_averages'
       backup_dir: 'backup/moving_averages'
+      tmp_file: 'moving_averages.csv'
