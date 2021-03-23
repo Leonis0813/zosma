@@ -1,3 +1,6 @@
+# 3.3.1 (2021/03/23)
+- [UPDATE] gems
+
 # 3.3.0 (2021/03/15)
 - [UPDATE] import scripts to add data_types parameter
 
