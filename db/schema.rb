@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 5) do
+ActiveRecord::Schema.define(version: 6) do
 
   create_table "candle_sticks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "from", null: false
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["from", "to", "pair", "time_frame"], name: "index_candle_sticks_on_from_and_to_and_pair_and_time_frame", unique: true
+    t.index ["to"], name: "index_candle_sticks_on_to"
   end
 
   create_table "moving_averages", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["time", "pair", "time_frame", "period"], name: "index_moving_averages_on_time_and_pair_and_time_frame_and_period", unique: true
+    t.index ["time"], name: "index_moving_averages_on_time"
   end
 
   create_table "rates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -45,6 +47,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["time", "pair"], name: "index_rates_on_time_and_pair", unique: true
+    t.index ["time"], name: "index_rates_on_time"
   end
 
 end

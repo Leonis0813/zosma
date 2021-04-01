@@ -14,6 +14,7 @@
 
 const int time_frames[TIME_FRAME_SIZE] = {PERIOD_M1, PERIOD_M5, PERIOD_M15, PERIOD_M30, PERIOD_H1, PERIOD_H4, PERIOD_D1, PERIOD_W1, PERIOD_MN1};
 const string time_frames_str[TIME_FRAME_SIZE] = {"M1", "M5", "M15", "M30", "H1", "H4", "D1", "W1", "MN1"};
+const int two_days = PERIOD_D1 * 60 * 2;
 bool is_written[TIME_FRAME_SIZE];
 
 void writeCandleStick(int index, int handle, datetime now) {
@@ -23,11 +24,19 @@ void writeCandleStick(int index, int handle, datetime now) {
     double high = iHigh(NULL, time_frames[index], 1);
     double low = iLow(NULL, time_frames[index], 1);
 
-    string from = TimeToStr(now - time_frames[index] * 60, TIME_DATE | TIME_MINUTES);
-    string to = TimeToStr(now - 60, TIME_DATE | TIME_MINUTES);
+    string from = "";
+    string to = "";
+
+    if(TimeDayOfWeek(now) == 1 && 0 <= index && index <= 6 && TimeToStr(now, TIME_DATE) != TimeToStr(now - time_frames[index] * 60, TIME_DATE)) {
+      from = TimeToStr(now - time_frames[index] * 60 - two_days, TIME_DATE | TIME_MINUTES);
+      to = TimeToStr(now - 60 - two_days, TIME_DATE | TIME_MINUTES);
+    } else {
+      from = TimeToStr(now - time_frames[index] * 60, TIME_DATE | TIME_MINUTES);
+      to = TimeToStr(now - 60, TIME_DATE | TIME_MINUTES);
+    }
+
     StringReplace(from, ".", "-");
     StringReplace(to, ".", "-");
-
     FileSeek(handle, 0, SEEK_END);
     FileWrite(handle, from + ":00", to + ":59", Symbol(), time_frames_str[index], open, close, high, low);
     is_written[index] = true;

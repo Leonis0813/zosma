@@ -1,3 +1,37 @@
+# 3.3.0 (2021/03/15)
+- [UPDATE] import scripts to add data_types parameter
+
+# 3.2.3 (2021/03/10)
+- [UPDATE] scripts to improve logging
+
+# 3.2.2 (2021/03/04)
+- [UPDATE] ruby version to 2.7.2
+- [UPDATE] gems
+
+# 3.2.1 (2021/02/24)
+- [FIX] default value of from parameter
+
+# 3.2.0 (2021/02/17)
+- [ADD] restore tool
+- [FIX] logger of application record
+- [UPDATE] gems
+
+# 3.1.2 (2021/02/02)
+- [FIX] import script for rates to set logger
+
+# 3.1.1 (2021/02/02)
+- [FIX] import script for rates
+
+# 3.1.0 (2021/01/27)
+- [ADD] backup tool
+- [ADD] index to rates, candle_sticks, and moving_averages table
+- [UPDATE] gems
+- [FIX] datetime on Monday
+
+# 3.0.12 (2021/01/07)
+- [UPDATE] default value of to parameter
+- [UPDATE] gems
+
 # 3.0.11 (2019/12/02)
 - [UPDATE] ruby version to 2.6.3
 - [UPDATE] gems
